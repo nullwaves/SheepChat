@@ -7,7 +7,7 @@ using Sheep.Logging;
 using Common;
 using System;
 
-namespace SheepsTelnetChat
+namespace Sheep.Telnet
 {
     internal class Connection
     {

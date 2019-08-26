@@ -6,52 +6,36 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using Sheep.Logging;
-using System.Threading;
 using System;
 using System.Threading.Tasks;
 
-namespace SheepsTelnetChat
+namespace Sheep.Telnet
 {
-    class Server
+    public class Server
     {
-        static int PortNumber = 23;
+        internal int PortNumber = 23;
         const int BacklogSize = 20;
         static Socket server;
         private static Task serverTask, consoleTask;
 
-        public static Logger serverlog = new Logger("server.log");
+        internal static Logger serverlog = new Logger("server.log");
         
-        static void Main(string[] args)
+        public Server()
         {
-            // Handle command line arguments from launch
-            // TODO: Remove Main completely from the Server framework
-            try
-            {
-                if (args.Length > 0)
-                {
-                    if (args[0] != String.Empty)
-                    {
-                        PortNumber = Convert.ToInt32(args[0]);
-                        if (PortNumber > 65535 || PortNumber < 1)
-                        {
-                            PortNumber = 23;
-                            throw new Exception("Port must be between 0 and 65535; Using default port");
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message + " " + e.StackTrace);
-            }
+            new Server(23);
+        }
+
+        public Server(int port)
+        {
+            PortNumber = (port > 65535 || port < 1) ? 23 : port;
 
             // Show version info and state falsehoods
             Console.Title = "Sheep's Telnet Chat Server v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             serverlog.Append("Sheep's Telnet Chat Server v" + Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            serverlog.Append("Server initiated");
+            serverlog.Append("Initializing server on port " + PortNumber);
 
             // Load usernames and passwords
-            Dictionary<string,string> udata = LoadUserData();
+            Dictionary<string, string> udata = LoadUserData();
             serverlog.Append(udata.Count() + " Users Loaded");
             // Save just incase?
             SaveUserData(udata);
@@ -60,13 +44,15 @@ namespace SheepsTelnetChat
             server = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
             server.Bind(new IPEndPoint(IPAddress.Any, PortNumber));
-            server.Listen(BacklogSize);
-            serverlog.Append("Listening for clients on port " + PortNumber);
+        }
 
+        public Task Start()
+        {
             // Start threads
             serverTask = Task.Run(acceptClients);
+            serverlog.Append("Listening for clients on port " + PortNumber);
             consoleTask = Task.Run(listenConsole);
-            serverTask.Wait();
+            return serverTask;
         }
 
         // Spy on the console for admin commands

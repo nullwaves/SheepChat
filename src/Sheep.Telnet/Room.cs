@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 
-namespace SheepsTelnetChat
+namespace Sheep.Telnet
 {
     class Room
     {

@@ -5,10 +5,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
-using Common;
 using Sheep.Logging;
 using System.Threading;
 using System;
+using System.Threading.Tasks;
 
 namespace SheepsTelnetChat
 {
@@ -17,12 +17,14 @@ namespace SheepsTelnetChat
         static int PortNumber = 23;
         const int BacklogSize = 20;
         static Socket server;
-        static Thread serverThread,consoleThread;
+        private static Task serverTask, consoleTask;
 
         public static Logger serverlog = new Logger("server.log");
         
         static void Main(string[] args)
         {
+            // Handle command line arguments from launch
+            // TODO: Remove Main completely from the Server framework
             try
             {
                 if (args.Length > 0)
@@ -40,39 +42,45 @@ namespace SheepsTelnetChat
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message + " " + e.StackTrace);
             }
+
+            // Show version info and state falsehoods
             Console.Title = "Sheep's Telnet Chat Server v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             serverlog.Append("Sheep's Telnet Chat Server v" + Assembly.GetExecutingAssembly().GetName().Version.ToString());
             serverlog.Append("Server initiated");
 
+            // Load usernames and passwords
             Dictionary<string,string> udata = LoadUserData();
-
-            Connection fakeconn = new Connection(serverlog, udata);
             serverlog.Append(udata.Count() + " Users Loaded");
+            // Save just incase?
             SaveUserData(udata);
+
+            // Actual server initialization stuff
             server = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
             server.Bind(new IPEndPoint(IPAddress.Any, PortNumber));
             server.Listen(BacklogSize);
-            
             serverlog.Append("Listening for clients on port " + PortNumber);
-            
-            serverThread = new Thread(acceptClients());
-            serverThread.Start();
-            consoleThread = new Thread(listenConsole(fakeconn));
-            consoleThread.Start();
+
+            // Start threads
+            serverTask = Task.Run(acceptClients);
+            consoleTask = Task.Run(listenConsole);
+            serverTask.Wait();
         }
 
-        private static ThreadStart listenConsole(Connection c)
+        // Spy on the console for admin commands
+        private static void listenConsole()
         {
+            Connection fake = new Connection(serverlog, LoadUserData());
             while (true)
             {
                 string str = Console.ReadLine();
-                c.ProcessLine(str);
+                fake.ProcessLine(str);
             }
         }
 
+        // Load userdata from a flat file
         public static Dictionary<string, string> LoadUserData()
         {
             Dictionary<string, string> users = new Dictionary<string, string>();
@@ -89,6 +97,7 @@ namespace SheepsTelnetChat
             return users;
         }
 
+        // Save userdata to a flat file
         public static void SaveUserData(Dictionary<string, string> udata)
         {
             serverlog.Append("Saved User Data");
@@ -105,7 +114,8 @@ namespace SheepsTelnetChat
             File.WriteAllBytes("user.dat", outs);
         }
 
-        private static ThreadStart acceptClients()
+        // Accept incoming connections loop
+        private static void acceptClients()
         {
             while (true)
             {
@@ -114,6 +124,7 @@ namespace SheepsTelnetChat
             }
         }
 
+        // Helper function to filter input from connections
         public static string ReplaceBackspace(string hasBackspace)
         {
             if (string.IsNullOrEmpty(hasBackspace))

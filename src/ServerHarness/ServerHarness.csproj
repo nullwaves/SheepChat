@@ -4,10 +4,11 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <StartupObject>ServerHarness.Program</StartupObject>
+    <ApplicationIcon />
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sheep.Telnet\Sheep.Telnet.csproj" />
+    <ProjectReference Include="..\..\SheepChat.Server\SheepChat.Server.csproj" />
   </ItemGroup>
 
 </Project>

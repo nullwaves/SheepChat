@@ -13,8 +13,7 @@ namespace Sheep.Telnet
 {
     public class Server
     {
-        internal int PortNumber = 23;
-        const int BacklogSize = 20;
+        internal int Port = 23;
         static Socket server;
         private static Task serverTask, consoleTask;
 
@@ -27,12 +26,12 @@ namespace Sheep.Telnet
 
         public Server(int port)
         {
-            PortNumber = (port > 65535 || port < 1) ? 23 : port;
+            Port = (port > 65535 || port < 1) ? 23 : port;
 
             // Show version info and state falsehoods
             Console.Title = "Sheep's Telnet Chat Server v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             serverlog.Append("Sheep's Telnet Chat Server v" + Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            serverlog.Append("Initializing server on port " + PortNumber);
+            serverlog.Append("Initializing server on port " + Port);
 
             // Load usernames and passwords
             Dictionary<string, string> udata = LoadUserData();
@@ -43,14 +42,14 @@ namespace Sheep.Telnet
             // Actual server initialization stuff
             server = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
-            server.Bind(new IPEndPoint(IPAddress.Any, PortNumber));
+            server.Bind(new IPEndPoint(IPAddress.Any, Port));
         }
 
         public Task Start()
         {
             // Start threads
             serverTask = Task.Run(acceptClients);
-            serverlog.Append("Listening for clients on port " + PortNumber);
+            serverlog.Append("Listening for clients on port " + Port);
             consoleTask = Task.Run(listenConsole);
             return serverTask;
         }
@@ -71,13 +70,20 @@ namespace Sheep.Telnet
         {
             Dictionary<string, string> users = new Dictionary<string, string>();
 
-            string ins = Encoding.UTF8.GetString(File.ReadAllBytes("user.dat"));
-            string[] pairs = ins.Split(';');
-            foreach (string str in pairs)
+            if (File.Exists("user.dat"))
             {
-                string[] str2 = str.Split(':');
-                if(str2[0] == "&") break;
-                users.Add(str2[0], str2[1]);
+                string ins = Encoding.UTF8.GetString(File.ReadAllBytes("user.dat"));
+                string[] pairs = ins.Split(';');
+                foreach (string str in pairs)
+                {
+                    string[] str2 = str.Split(':');
+                    if (str2[0] == "&") break;
+                    users.Add(str2[0], str2[1]);
+                }
+            }
+            else
+            {
+                SaveUserData(users);
             }
 
             return users;
@@ -103,6 +109,7 @@ namespace Sheep.Telnet
         // Accept incoming connections loop
         private static void acceptClients()
         {
+            server.Listen(100);
             while (true)
             {
                 Socket conn = server.Accept();

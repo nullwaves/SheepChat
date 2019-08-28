@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SheepChat.Server\SheepChat.Server.csproj" />
+    <ProjectReference Include="..\SheepChat.Server\SheepChat.Server.csproj" />
   </ItemGroup>
 
 </Project>

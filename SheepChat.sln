@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerHarness", "src\ServerHarness\ServerHarness.csproj", "{62115A82-41F3-46A1-8882-B24AFA12C644}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SheepChat.Server", "SheepChat.Server\SheepChat.Server.csproj", "{418FC419-E906-4751-97BE-7E62114EED02}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SheepChat.Server", "src\SheepChat.Server\SheepChat.Server.csproj", "{418FC419-E906-4751-97BE-7E62114EED02}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,53 +6,62 @@ using System.Threading;
 using Sheep.Logging;
 using Common;
 using System;
+using SheepChat.Server.Interfaces;
+using System.Net;
+using System.Text;
 
-namespace Sheep.Telnet
+namespace SheepChat.Server
 {
-    internal class Connection
+    internal class Connection : IConnection
     {
+        private readonly ISubSystem connectionHost;
+
+        #region Connection Information
+        public string ID { get; private set; }
+        public IPAddress CurrentIPAddress { get; private set; }
+        public byte[] Data { get; private set; }
+        public StringBuilder Buffer { get; set; }
+        #endregion
+
+        #region Event Handlers
+        public event EventHandler<ConnectionArgs> ClientDisconnected;
+        public event EventHandler<ConnectionArgs> DataReceived;
+        public event EventHandler<ConnectionArgs> DataSent;
+        #endregion
+
+        #region Privates
+        private readonly Socket socket;
+        #endregion
+
+        /* +++++ TODO: Eliminate between comments +++++ */
         // TODO: Remove neccesity of defaults
         // Statics
-        private static ArrayList connections = new ArrayList();
-        private static Logger serverlog;
         private static Dictionary<string, string> userdata = new Dictionary<string, string>();
 
         // Sockets & Streams
-        private Socket socket;
+        
         private StreamReader Reader;
-        private StreamWriter Writer;
-
-        // Connection information
-        private string ip;
         private bool loggedin = false;
         private string loggedinname = string.Empty;
-        private int warninglevel = 0;
         private string mode = "none";
-        private bool isserver = false;
-        private Thread myThread;
+        /* ++++++++++++++++++++++++++++++++++++++++++++ */
 
         // Constructor for a fake connection from the server to process commands
         // TODO: Remove neccesity
-        internal Connection(Logger slog, Dictionary<string, string> udata)
+        internal Connection(Dictionary<string, string> udata)
         {
-            serverlog = slog;
             userdata = udata;
-            isserver = true;
         }
 
         // Constructor for new connections to the server
-        public Connection(Socket socket)
+        public Connection(Socket socket, ISubSystem connectionHost)
         {
             this.socket = socket;
+            this.connectionHost = connectionHost;
 
-            ip = socket.RemoteEndPoint.ToString();
-            Reader = new StreamReader(new NetworkStream(socket, false));
-            Writer = new StreamWriter(new NetworkStream(socket, true))
-            {
-                AutoFlush = true
-            };
-            myThread = new Thread(ClientLoop);
-            myThread.Start();
+            ID = Guid.NewGuid().ToString();
+            CurrentIPAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
+            Data = new byte[1];
         }
 
         // Loop for collecting input from clients to be processed
@@ -74,17 +83,14 @@ namespace Sheep.Telnet
             }
             finally
             {
-                OnDisconnect(false);
+                OnDisconnect();
             }
         }
 
         // Things to do when the client first connects
         void OnConnect()
         {
-            serverlog.Append(ip + " has connected", "user");
-            WriteToStream(this, "Welcome!");
-            WriteToStream(this, connections.Count + " users are online.");
-            connections.Add(this);
+            Send("Welcome!");
             Login(string.Empty);
         }
 
@@ -110,12 +116,11 @@ namespace Sheep.Telnet
                     // No option has been selected yet.
                     if (data != string.Empty)
                     {
-                        WriteToStream(this, "Not a valid option! Try Again!");
-                        UpWarning();
+                        Send("Not a valid option! Try Again!");
                     }
-                    WriteToStream(this, "Please Choose an Option:");
-                    WriteToStream(this, "register");
-                    WriteToStream(this, "login");
+                    Send("Please Choose an Option:");
+                    Send("register");
+                    Send("login");
                 }
             }
             else if (mode.Equals("login"))
@@ -127,10 +132,9 @@ namespace Sheep.Telnet
                     {
                         if (EncryptionHelper.Encrypt(data) == userdata[loggedinname])
                         {
-                            serverlog.Append(loggedinname + " successfully signed in from " + ip, "user");
-                            WriteToStream(this, "Successfully Logged in as " + loggedinname + "!");
+                            Send("Successfully Logged in as " + loggedinname + "!");
                             loggedin = true;
-                            SendToAll(format(loggedinname + " logged in.", new Room().Name));
+                            //SendToAll(format(loggedinname + " logged in.", new Room().Name));
                         }
                         else if (data == "!back")
                         {
@@ -138,25 +142,23 @@ namespace Sheep.Telnet
                         }
                         else
                         {
-                            WriteToStream(this, "Wrong Password!");
-                            UpWarning();
+                            Send("Wrong Password!");
                         }
                     }
                     else if (data == string.Empty)
                     {
-                        WriteToStream(this, "Enter your username:");
+                        Send("Enter your username:");
                     }
                     else
                     {
                         if (userdata.ContainsKey(data))
                         {
                             loggedinname = data;
-                            serverlog.Append(ip + " is attempting to login with username " + data, "login");
-                            WriteToStream(this, "Enter Your Password:");
+                            Send("Enter Your Password:");
                         }
                         else
                         {
-                            WriteToStream(this, "Username does not exist!");
+                            Send("Username does not exist!");
                         }
                     }
                 }
@@ -171,9 +173,8 @@ namespace Sheep.Telnet
                         if (!userdata.ContainsKey(loggedinname))
                         {
                             userdata.Add(loggedinname, EncryptionHelper.Encrypt(data.Trim()));
-                            serverlog.Append(ip + " registered with username " + loggedinname, "user");
                             Server.SaveUserData(userdata);
-                            WriteToStream(this, "Account created with username " + loggedinname + " and password " + data.Trim());
+                            Send("Account created with username " + loggedinname + " and password " + data.Trim());
                             mode = "login";
                             Login(data.Trim());
                         }
@@ -182,19 +183,19 @@ namespace Sheep.Telnet
                     {
                         if (data == string.Empty)
                         {
-                            WriteToStream(this, "Enter Username: ");
+                            Send("Enter Username: ");
                         }
                         else
                         {
                             if (!userdata.ContainsKey(data))
                             {
                                 loggedinname = data;
-                                WriteToStream(this, "Account Name \"" + data + "\" is available!");
-                                WriteToStream(this, "Enter Password: ");
+                                Send("Account Name \"" + data + "\" is available!");
+                                Send("Enter Password: ");
                             }
                             else
                             {
-                                WriteToStream(this, "Username already exists!");
+                                Send("Username already exists!");
                             }
                         }
                     }
@@ -202,46 +203,98 @@ namespace Sheep.Telnet
             }
         }
 
-        // Increase a connection's warning level
-        private void UpWarning()
+        internal void BeginListen()
         {
-            warninglevel++;
-            WriteToStream(this, "Your warning level has been increased!");
-            if (warninglevel > 4)
+            socket.BeginReceive(this.Data, 0, this.Data.Length, SocketFlags.None, new AsyncCallback(OnDataReceived), null);
+        }
+
+        private void OnDataReceived(IAsyncResult ar)
+        {
+            try
             {
-                WriteToStream(this, "You've been kicked for being warned too many times!");
-                OnDisconnect(true);
+                int charCount = socket.EndReceive(ar);
+                if(charCount == 0)
+                {
+                    OnDisconnect();
+                }
+                else
+                {
+                    DataReceived?.Invoke(this, new ConnectionArgs(this));
+                    BeginListen();
+                }
+            }
+            catch
+            {
+                OnDisconnect();
             }
         }
 
-        // Things to do when a client is disconnecting/has been disconnected.
-        void OnDisconnect(bool kick)
+        /// <summary>
+        /// Close and disconnect the socket connection.
+        /// </summary>
+        public void Disconnect()
         {
-            if (myThread.ThreadState == ThreadState.Running) myThread.Abort();
-            connections.Remove(this);
-            socket.Close();
-            //if (loggedin)
-            //{
-            //    serverlog.Append(loggedinname + " (" + ip + ") disconnected", "user");
-            //}
-            //else serverlog.Append(ip + " disconnected", "user");
-
-            string l = "";
-            if (loggedin)
-            {
-                l += loggedinname + " (" + ip + ")";
-            }
-            else l += ip;
-
-            if (kick)
-            {
-                l += " was kicked!";
-            }
-            else l += " has disconnected";
-
-            serverlog.Append(l, "user");
+            OnDisconnect();
         }
-        
+
+        /// <summary>
+        /// Send raw bytes over the connection.
+        /// </summary>
+        /// <param name="data">The bytes to send.</param>
+        public void Send(byte[] data)
+        {
+            socket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(OnSendComplete), null);
+        }
+
+        /// <summary>
+        /// Send string of data over the connection.
+        /// </summary>
+        /// <param name="data">The string to send.</param>
+        public void Send(string data)
+        {
+            var bytes = Encoding.GetEncoding(437).GetBytes(data);
+            Send(bytes);
+        }
+
+        /// <summary>
+        /// Async callback when send is completed.
+        /// </summary>
+        /// <param name="ar">The asynchronous result.</param>
+        private void OnSendComplete(IAsyncResult ar)
+        {
+            try
+            {
+                socket.EndSend(ar);
+                DataSent?.Invoke(this, new ConnectionArgs(this));
+            }
+            catch
+            {
+                OnDisconnect();
+            }
+        }
+
+        /// <summary>
+        /// Produce paginated output from the buffer.
+        /// TODO: Implement buffer
+        /// </summary>
+        public void ProcessBuffer()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Disconnects the socket and raises the ClientDisconnected event.
+        /// </summary>
+        private void OnDisconnect()
+        {
+            if (socket.Connected)
+            {
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
+            }
+            ClientDisconnected(this, new ConnectionArgs(this));
+        }
+
         // General command processing
         // TODO: Refactor as a CommandManager component of a ConnectionState
         public void ProcessLine(string input)
@@ -249,54 +302,34 @@ namespace Sheep.Telnet
             if (input.StartsWith("/") == false)
             {
                 // Client is just sending text, pass on to others
-                if (loggedin == false)
+                if (!loggedin)
                 {
                     Login(input);
-                    serverlog.Append(ip + ": " + input, "login");
                 }
-                else
-                {
-                    serverlog.Append(loggedinname + ": " + input);
-                    SendToAll(format(loggedinname + ": " + input, new Room().Name));
-
-                }
+                else Send(format(input, new Room().Name));
             }
             else
             {
                 // Clint is trying to proccess a command
-                if (!loggedin)
+                string[] args = input.Substring(1).Split(' ');
+                if (args.Length < 1) Login("");
+                switch (args[0])
                 {
-                    if (!isserver)
-                    {
-                        serverlog.Append(loggedinname + " tried command " + input);
-                    }
-                }
-                else
-                {
-                    string[] args = input.Substring(1).Split(' ');
-                    if (args.Length < 1) Login("");
-                    serverlog.Append(ip + " tried command " + input + " with " + args.Length + " arguments");
-                    switch (args[0])
-                    {
-                        case "help":
-                            WriteToStream(this, "you typed /help"); // Great helpful command here.
-                            break;
-                        case "list":
-                            string lists = "";
-                            foreach (Connection c in connections)
-                            {
-                                lists += c.loggedinname + ", ";
-                            }
-                            lists = lists.Substring(0, lists.Length - 2);
-                            WriteToStream(this, "Online Users: " + lists);
-                            break;
-                        case "quit":
-                            this.OnDisconnect(false);
-                            break;
-                        default:
-                            WriteToStream(this, "Invalid Command");
-                            break;
-                    }
+                    case "help":
+                        Send("you typed /help"); // Great helpful command here.
+                        break;
+                    case "list":
+                        throw new NotImplementedException();
+                        //string lists = "";
+                        //lists = lists.Substring(0, lists.Length - 2);
+                        //Send("Online Users: " + lists);
+                        //break;
+                    case "quit":
+                        this.OnDisconnect();
+                        break;
+                    default:
+                        Send("Invalid Command");
+                        break;
                 }
             }
         }
@@ -306,28 +339,14 @@ namespace Sheep.Telnet
         {
             return "<" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "> [" + type.Trim() + "] " + msg;
         }
+    }
 
-        // Send to client
-        public static void WriteToStream(Connection c, string msg)
+    public class ConnectionArgs : EventArgs
+    {
+        public IConnection Connection { get; private set; }
+        public ConnectionArgs(IConnection connnection)
         {
-            try
-            {
-                c.Writer.WriteLine(msg);
-            }
-            catch (IOException e)
-            {
-                serverlog.Append(e.ToString());
-                WriteToStream(c, msg);
-            }
-        }
-
-        // Send to all clients
-        public void SendToAll(string msg)
-        {
-            foreach (Connection c in connections)
-            {
-                if (c.loggedin) WriteToStream(c, msg);
-            }
+            Connection = connnection;
         }
     }
 }

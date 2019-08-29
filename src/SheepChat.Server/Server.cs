@@ -8,13 +8,55 @@ using System.Text;
 using Sheep.Logging;
 using System;
 using System.Threading.Tasks;
+using SheepChat.Server.Interfaces;
 
-namespace Sheep.Telnet
+namespace SheepChat.Server
 {
-    public class Server
+    public class Server : ISubSystem
     {
-        internal int Port = 23;
-        static Socket server;
+        /// <summary>
+        /// Port on which the server should listen.
+        /// </summary>
+        public int Port { get; set; }
+
+        #region Event Handlers
+        /// <summary>
+        /// A 'client connected' event raised by the server.
+        /// </summary>
+        public event EventHandler<ConnectionArgs> ClientConnect;
+
+        /// <summary>
+        /// A 'client disconnected' event raised by the server.
+        /// </summary>
+        public event EventHandler<ConnectionArgs> ClientDisconnected;
+
+        /// <summary>
+        /// A 'data received' event raised by the server.
+        /// </summary>
+        public event EventHandler<ConnectionArgs> DataReceived;
+
+        /// <summary>
+        /// A 'data sent' event raised by the server.
+        /// </summary>
+        public event EventHandler<ConnectionArgs> DataSent;
+        #endregion
+
+        /// <summary>
+        /// Lock object for synchronization.
+        /// </summary>
+        private static readonly object Lock = new object();
+
+        /// <summary>
+        /// List of current connections to this server.
+        /// </summary>
+        private readonly List<IConnection> connections = new List<IConnection>();
+
+        /// <summary>
+        /// The primary socket for incoming connections.
+        /// </summary>
+        private Socket socket;
+
+
         private static Task serverTask, consoleTask;
 
         internal static Logger serverlog = new Logger("server.log");
@@ -40,29 +82,57 @@ namespace Sheep.Telnet
             SaveUserData(udata);
 
             // Actual server initialization stuff
-            server = new Socket(AddressFamily.InterNetwork,
+            socket = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
-            server.Bind(new IPEndPoint(IPAddress.Any, Port));
+            socket.Bind(new IPEndPoint(IPAddress.Any, Port));
         }
 
-        public Task Start()
+        public void Start()
         {
             // Start threads
-            serverTask = Task.Run(acceptClients);
+            socket.BeginAccept(new AsyncCallback(OnClientConnect), null);
             serverlog.Append("Listening for clients on port " + Port);
-            consoleTask = Task.Run(listenConsole);
-            return serverTask;
         }
 
-        // Spy on the console for admin commands
-        private static void listenConsole()
+        private void OnClientConnect(IAsyncResult ar)
         {
-            Connection fake = new Connection(serverlog, LoadUserData());
-            while (true)
+            try
             {
-                string str = Console.ReadLine();
-                fake.ProcessLine(str);
+                Socket clientSocket = socket.EndAccept(ar);
+                var connection = new Connection(clientSocket, this);
+                connection.DataSent += HandleDataSent;
+                connection.DataReceived += HandleDataReceived;
+                connection.ClientDisconnected += HandleClientDisconnected;
+                connection.BeginListen();
+
+                lock(Lock)
+                {
+                    connections.Add(connection);
+                }
+
+                ClientConnect?.Invoke(this, new ConnectionArgs(connection));
+
+                socket.BeginAccept(new AsyncCallback(OnClientConnect), null);
             }
+            catch (ObjectDisposedException)
+            {
+                // Object is disposed, let the thread die.
+            }
+        }
+
+        private void HandleClientDisconnected(object sender, ConnectionArgs e)
+        {
+            ClientDisconnected?.Invoke(sender, e);
+        }
+
+        private void HandleDataReceived(object sender, ConnectionArgs e)
+        {
+            DataReceived?.Invoke(sender, e);
+        }
+
+        private void HandleDataSent(object sender, ConnectionArgs e)
+        {
+            DataSent?.Invoke(sender, e);
         }
 
         // Load userdata from a flat file
@@ -107,13 +177,13 @@ namespace Sheep.Telnet
         }
 
         // Accept incoming connections loop
-        private static void acceptClients()
+        private void acceptClients()
         {
-            server.Listen(100);
+            socket.Listen(4);
             while (true)
             {
-                Socket conn = server.Accept();
-                new Connection(conn);
+                Socket s = socket.Accept();
+                connections.Add(new Connection(s, this));
             }
         }
 
@@ -137,6 +207,21 @@ namespace Sheep.Telnet
                 }
             }
             return result.ToString();
+        }
+
+        public void SubscribeToSystem(ISubSystemHost sender)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InformSubscribedSystem(string msg)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Stop()
+        {
+            throw new NotImplementedException();
         }
     }
 

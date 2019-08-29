@@ -16,7 +16,7 @@ namespace Sheep.Logging
 
         public void Append(string message)
         {
-            this.Append(message, 1);
+            Append(message, 1);
         }
 
         public void Append(string message, int level)
@@ -24,13 +24,13 @@ namespace Sheep.Logging
             switch (level)
             {
                 case 2:
-                    this.Append(message, "warning");
+                    Append(message, "warning");
                     break;
                 case 3:
-                    this.Append(message, "error");
+                    Append(message, "error");
                     break;
                 default:
-                    this.Append(message, "info");
+                    Append(message, "info");
                     break;
             }
         }

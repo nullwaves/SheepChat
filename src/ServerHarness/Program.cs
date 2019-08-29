@@ -1,4 +1,5 @@
-﻿using Sheep.Telnet;
+﻿using SheepChat.Server;
+using System.Threading.Tasks;
 
 namespace ServerHarness
 {
@@ -15,8 +16,7 @@ namespace ServerHarness
             {
                 server = new Server();
             }
-            var task = server.Start();
-            task.Wait();
+            server.Start();
         }
     }
 }

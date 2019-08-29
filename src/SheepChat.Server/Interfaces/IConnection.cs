@@ -15,7 +15,7 @@ namespace SheepChat.Server.Interfaces
         /// <summary>
         /// Gets or sets the IPAddress for the connection.
         /// </summary>
-        IPAddress CurrentIPAddress { get; set; }
+        IPAddress CurrentIPAddress { get; }
 
         /// <summary>
         /// Gets the byte data waiting to be processed
@@ -37,6 +37,12 @@ namespace SheepChat.Server.Interfaces
         /// </summary>
         /// <param name="data">The byte array to send.</param>
         void Send(byte[] data);
+
+        /// <summary>
+        /// Send data to the connection.
+        /// </summary>
+        /// <param name="data">The string to send.</param>
+        void Send(string data);
 
         /// <summary>
         /// Utilize buffer to produce output.

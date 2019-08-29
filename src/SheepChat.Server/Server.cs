@@ -19,7 +19,7 @@ namespace SheepChat.Server
         /// </summary>
         public int Port { get; set; }
 
-        #region Event Handlers
+        #region Events
         /// <summary>
         /// A 'client connected' event raised by the server.
         /// </summary>

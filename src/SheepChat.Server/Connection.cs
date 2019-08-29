@@ -23,7 +23,7 @@ namespace SheepChat.Server
         public StringBuilder Buffer { get; set; }
         #endregion
 
-        #region Event Handlers
+        #region Events
         public event EventHandler<ConnectionArgs> ClientDisconnected;
         public event EventHandler<ConnectionArgs> DataReceived;
         public event EventHandler<ConnectionArgs> DataSent;

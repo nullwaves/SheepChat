@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Threading;
-using Sheep.Logging;
 using Common;
 using System;
 using SheepChat.Server.Interfaces;
@@ -39,8 +35,6 @@ namespace SheepChat.Server
         private static Dictionary<string, string> userdata = new Dictionary<string, string>();
 
         // Sockets & Streams
-        
-        private StreamReader Reader;
         private bool loggedin = false;
         private string loggedinname = string.Empty;
         private string mode = "none";
@@ -62,36 +56,6 @@ namespace SheepChat.Server
             ID = Guid.NewGuid().ToString();
             CurrentIPAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
             Data = new byte[1];
-        }
-
-        // Loop for collecting input from clients to be processed
-        void ClientLoop()
-        {
-            try
-            {
-                OnConnect();
-                while (!Reader.EndOfStream)
-                {
-                    string line = Reader.ReadLine();
-                    if (line == null)
-                    {
-                        break;
-                    }
-                    string input = Server.ReplaceBackspace(line.Trim());
-                    if (input.Length > 1) ProcessLine(input);
-                }
-            }
-            finally
-            {
-                OnDisconnect();
-            }
-        }
-
-        // Things to do when the client first connects
-        void OnConnect()
-        {
-            Send("Welcome!");
-            Login(string.Empty);
         }
 
         // Process input from the login state
@@ -306,7 +270,7 @@ namespace SheepChat.Server
                 {
                     Login(input);
                 }
-                else Send(format(input, new Room().Name));
+                else Send(Format(input, new Room().Name));
             }
             else
             {
@@ -335,7 +299,7 @@ namespace SheepChat.Server
         }
 
         // Formatting for chat messages to be sent to the clients
-        public string format(string msg, string type)
+        public string Format(string msg, string type)
         {
             return "<" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "> [" + type.Trim() + "] " + msg;
         }

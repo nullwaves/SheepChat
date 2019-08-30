@@ -1,5 +1,5 @@
 ﻿using SheepChat.Server;
-using System.Threading.Tasks;
+using System;
 
 namespace ServerHarness
 {
@@ -17,6 +17,13 @@ namespace ServerHarness
                 server = new Server();
             }
             server.Start();
+
+            while(true)
+            {
+                var s = Console.ReadLine();
+                if (s == "quit")
+                    break;
+            }
         }
     }
 }

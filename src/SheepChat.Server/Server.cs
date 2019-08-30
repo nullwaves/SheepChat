@@ -56,15 +56,14 @@ namespace SheepChat.Server
         /// </summary>
         private Socket socket;
 
-
-        private static Task serverTask, consoleTask;
+        /// <summary>
+        /// Sub system host.
+        /// </summary>
+        private ISubSystemHost subSystemHost;
 
         internal static Logger serverlog = new Logger("server.log");
-        
-        public Server()
-        {
-            new Server(23);
-        }
+
+        public Server() : this(23) { }
 
         public Server(int port)
         {
@@ -81,18 +80,25 @@ namespace SheepChat.Server
             // Save just incase?
             SaveUserData(udata);
 
-            // Actual server initialization stuff
-            socket = new Socket(AddressFamily.InterNetwork,
-                SocketType.Stream, ProtocolType.Tcp);
-            socket.Bind(new IPEndPoint(IPAddress.Any, Port));
         }
 
+        /// <summary>
+        /// Initialize server and start listening for connections.
+        /// </summary>
         public void Start()
         {
-            // Start threads
+            // Actual server initialization stuff
+            socket = new Socket(AddressFamily.InterNetwork,
+                                SocketType.Stream,
+                                ProtocolType.Tcp);
+            socket.Bind(new IPEndPoint(IPAddress.Any, Port));
+            socket.Listen(4);
+
+            // Start thread
             socket.BeginAccept(new AsyncCallback(OnClientConnect), null);
             serverlog.Append("Listening for clients on port " + Port);
         }
+
 
         private void OnClientConnect(IAsyncResult ar)
         {
@@ -105,7 +111,7 @@ namespace SheepChat.Server
                 connection.ClientDisconnected += HandleClientDisconnected;
                 connection.BeginListen();
 
-                lock(Lock)
+                lock (Lock)
                 {
                     connections.Add(connection);
                 }
@@ -176,17 +182,6 @@ namespace SheepChat.Server
             File.WriteAllBytes("user.dat", outs);
         }
 
-        // Accept incoming connections loop
-        private void acceptClients()
-        {
-            socket.Listen(4);
-            while (true)
-            {
-                Socket s = socket.Accept();
-                connections.Add(new Connection(s, this));
-            }
-        }
-
         // Helper function to filter input from connections
         public static string ReplaceBackspace(string hasBackspace)
         {
@@ -209,19 +204,45 @@ namespace SheepChat.Server
             return result.ToString();
         }
 
+        /// <summary>
+        /// Subscribe to receive system updates from this system.
+        /// </summary>
+        /// <param name="sender">System to subscribe to.</param>
         public void SubscribeToSystem(ISubSystemHost sender)
         {
-            throw new NotImplementedException();
+            subSystemHost = sender;
         }
 
-        public void InformSubscribedSystem(string msg)
+        /// <summary>
+        /// Inform subscribed system of an update.
+        /// </summary>
+        /// <param name="message">Message to be sent to subscribed systems.</param>
+        public void InformSubscribedSystem(string message)
         {
-            throw new NotImplementedException();
+            subSystemHost.UpdateSubSystemHost(this, message);
         }
 
+        /// <summary>
+        /// Stop the server.
+        /// </summary>
         public void Stop()
         {
-            throw new NotImplementedException();
+            CloseAllSockets();
+        }
+
+        /// <summary>
+        /// Close server socket and all connections.
+        /// </summary>
+        private void CloseAllSockets()
+        {
+            socket?.Close();
+
+            var connectionsCopy = new List<IConnection>(connections);
+            foreach(var connection in connectionsCopy)
+            {
+                connection.Send("Server shutting down. Disconnecting...");
+                connection.Disconnect();
+            }
         }
     }
 

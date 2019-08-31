@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Text;
-using Sheep.Logging;
 using System;
-using System.Threading.Tasks;
 using SheepChat.Server.Interfaces;
 
 namespace SheepChat.Server
@@ -61,22 +57,14 @@ namespace SheepChat.Server
         /// </summary>
         private ISubSystemHost subSystemHost;
 
-        internal static Logger serverlog = new Logger("server.log");
-
         public Server() : this(23) { }
 
         public Server(int port)
         {
             Port = (port > 65535 || port < 1) ? 23 : port;
 
-            // Show version info and state falsehoods
-            Console.Title = "Sheep's Telnet Chat Server v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            serverlog.Append("Sheep's Telnet Chat Server v" + Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            serverlog.Append("Initializing server on port " + Port);
-
             // Load usernames and passwords
             Dictionary<string, string> udata = LoadUserData();
-            serverlog.Append(udata.Count() + " Users Loaded");
             // Save just incase?
             SaveUserData(udata);
 
@@ -96,7 +84,6 @@ namespace SheepChat.Server
 
             // Start thread
             socket.BeginAccept(new AsyncCallback(OnClientConnect), null);
-            serverlog.Append("Listening for clients on port " + Port);
         }
 
 
@@ -168,8 +155,6 @@ namespace SheepChat.Server
         // Save userdata to a flat file
         public static void SaveUserData(Dictionary<string, string> udata)
         {
-            serverlog.Append("Saved User Data");
-
             string strdata = "";
             foreach (KeyValuePair<string, string> str in udata)
             {

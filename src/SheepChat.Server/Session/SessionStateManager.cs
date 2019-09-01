@@ -1,6 +1,8 @@
 ﻿using SheepChat.Server.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Composition;
+using System.Linq;
 using System.Reflection;
 
 namespace SheepChat.Server.Session
@@ -16,6 +18,26 @@ namespace SheepChat.Server.Session
         private SessionStateManager()
         {
             Recompose();
+        }
+
+        public void Recompose()
+        {
+            Composer.Compose(this);
+
+            Type defaultStateType;
+
+            if (States.Length > 0)
+            {
+                defaultStateType = (from s in States
+                                    orderby s.Metadata.StatePriority descending
+                                    select s.Value.GetType()).First();
+            }
+            else
+            {
+                defaultStateType = typeof(DefaultState);
+            }
+
+            defaultStateConstructor = defaultStateType.GetConstructor(new Type[] { typeof(Session) });
         }
 
         public static SessionStateManager Instance
@@ -36,6 +58,18 @@ namespace SheepChat.Server.Session
                 var paramaters = new object[] { session };
                 return (SessionState)defaultStateConstructor.Invoke(paramaters);
             }
+        }
+    }
+
+    internal class DefaultState : SessionState
+    {
+
+        public DefaultState(Session session) : base(session)
+        { 
+        }
+        
+        public override void ProcessInput(string command)
+        { 
         }
     }
 }

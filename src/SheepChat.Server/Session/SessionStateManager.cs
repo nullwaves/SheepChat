@@ -5,9 +5,9 @@ using System.Composition;
 using System.Linq;
 using System.Reflection;
 
-namespace SheepChat.Server.Session
+namespace SheepChat.Server.Sessions
 {
-    internal class SessionStateManager : IRecomposable
+    public class SessionStateManager : IRecomposable
     {
         private static readonly object Lock = new object();
 

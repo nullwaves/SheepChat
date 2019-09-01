@@ -44,13 +44,13 @@ namespace SheepChat.Server
         private void Server_ClientDisconnected(object sender, ConnectionArgs e)
         {
             UpdateSubSystemHost((ISubSystem)sender, e.Connection.ID + " - Disconnected");
-            // SessionManager.Instance.OnSessionDisconnect(e.Connection);
+            SessionManager.Instance.OnSessionDisconnect(e.Connection);
         }
 
         private void Server_ClientConnect(object sender, ConnectionArgs e)
         {
             UpdateSubSystemHost((ISubSystem)sender, e.Connection.ID + " - Connected");
-            // SessionManager.Instance.OnSessionConnect(e.Connection);
+            SessionManager.Instance.OnSessionConnect(e.Connection);
         }
 
         public override void Start()

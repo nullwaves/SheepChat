@@ -1,6 +1,6 @@
 ﻿using SheepChat.Server.Interfaces;
 
-namespace SheepChat.Server.Session
+namespace SheepChat.Server.Sessions
 {
     public class Session : ISubSystem
     {
@@ -8,9 +8,18 @@ namespace SheepChat.Server.Session
 
         public IConnection Connection { get; private set; }
 
+        public string ID
+        {
+            get { return Connection.ID; }
+        }
+
         public SessionState State { get; set; }
 
         // public User User { get; set; }
+
+        public delegate void SessionAuthenticatedEventHandler(Session session);
+
+        public event SessionAuthenticatedEventHandler SessionAuthenticated;
 
         public Session(IConnection conn)
         {
@@ -25,6 +34,11 @@ namespace SheepChat.Server.Session
         public void SubscribeToSystem(ISubSystemHost sender)
         {
             host = sender;
+        }
+
+        public void UnsubscribeToSystem()
+        {
+            host = null;
         }
 
         public void InformSubscribedSystem(string msg)

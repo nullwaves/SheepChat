@@ -115,7 +115,11 @@ namespace SheepChat.Server
 
         private void HandleClientDisconnected(object sender, ConnectionArgs e)
         {
-            ClientDisconnected?.Invoke(sender, e);
+            lock(Lock)
+            {
+                connections.Remove(e.Connection);
+            }
+            ClientDisconnected?.Invoke(this, e);
         }
 
         private void HandleDataReceived(object sender, ConnectionArgs e)
@@ -196,6 +200,11 @@ namespace SheepChat.Server
         public void SubscribeToSystem(ISubSystemHost sender)
         {
             subSystemHost = sender;
+        }
+
+        public void UnsubscribeToSystem()
+        {
+            subSystemHost = null;
         }
 
         /// <summary>

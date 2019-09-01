@@ -1,4 +1,5 @@
 ﻿using SheepChat.Server;
+using SheepChat.Server.Interfaces;
 using System;
 
 namespace ServerHarness
@@ -7,23 +8,25 @@ namespace ServerHarness
     {
         static void Main(string[] args)
         {
-            Server server;
-            if (args.Length > 0 && int.TryParse(args[0], out int p))
-            {
-                server = new Server(p);
-            }
-            else
-            {
-                server = new Server();
-            }
+            ServerManager server = ServerManager.Instance;
+            server.SubscribeToSystemHost(new ConsoleUpdater());
             server.Start();
 
             while(true)
             {
                 var s = Console.ReadLine();
                 if (s == "quit")
-                    break;
+                    server.Stop();
             }
         }
     }
+
+    public class ConsoleUpdater : ISystemHost
+    {
+        public void UpdateSystemHost(ISystem sender, string msg)
+        {
+            Console.WriteLine("<{0:s}> {1}", DateTime.Now, msg);
+        }
+    }
+
 }

@@ -50,6 +50,8 @@ namespace SheepChat.Server
         // Constructor for new connections to the server
         public Connection(Socket socket, ISubSystem connectionHost)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             this.socket = socket;
             this.connectionHost = connectionHost;
 
@@ -216,7 +218,8 @@ namespace SheepChat.Server
         /// <param name="data">The string to send.</param>
         public void Send(string data)
         {
-            var bytes = Encoding.GetEncoding(437).GetBytes(data);
+            byte[] bytes;
+            bytes = Encoding.GetEncoding(437).GetBytes(data);
             Send(bytes);
         }
 

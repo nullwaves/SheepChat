@@ -13,11 +13,9 @@ namespace SheepChat.Server
 
         static Composer()
         {
-            configuration = new ContainerConfiguration().WithAssemblies(
-                Directory.GetFiles(Assembly.GetEntryAssembly().Location, "*.dll", SearchOption.AllDirectories)
-                         .Select(AssemblyLoadContext.Default.LoadFromAssemblyPath)
-                         .ToList()
-                         );
+            string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll", SearchOption.AllDirectories);
+            var sel = files.Select(AssemblyLoadContext.Default.LoadFromAssemblyPath);
+            configuration = new ContainerConfiguration().WithAssemblies(sel.ToList());
         }
 
         public static void Compose(object obj)

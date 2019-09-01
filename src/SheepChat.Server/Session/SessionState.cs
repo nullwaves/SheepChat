@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Composition;
 
-namespace SheepChat.Server.Session
+namespace SheepChat.Server.Sessions
 {
     public abstract class SessionState
     {

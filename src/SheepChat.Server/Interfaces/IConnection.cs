@@ -26,6 +26,16 @@ namespace SheepChat.Server.Interfaces
         StringBuilder Buffer { get; }
 
         /// <summary>
+        /// The last input termintaor used by the client.
+        /// </summary>
+        string LastInputTerminator { get; set; }
+
+        /// <summary>
+        /// The last raw input sent by the client.
+        /// </summary>
+        string LastRawInput { get; set; }
+
+        /// <summary>
         /// Disconnect the connection.
         /// </summary>
         void Disconnect();

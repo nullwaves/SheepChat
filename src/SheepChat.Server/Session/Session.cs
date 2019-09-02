@@ -31,6 +31,8 @@ namespace SheepChat.Server.Sessions
             }
         }
 
+        public void ProcessInput(string input) => State.ProcessInput(input);
+
         public void Write(string data)
         {
             Connection.Send(data);

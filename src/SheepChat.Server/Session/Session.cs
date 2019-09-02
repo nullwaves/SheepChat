@@ -31,6 +31,16 @@ namespace SheepChat.Server.Sessions
             }
         }
 
+        public void Write(string data)
+        {
+            Connection.Send(data);
+        }
+
+        public void Write()
+        {
+            Write(string.Empty);
+        }
+
         public void SubscribeToSystem(ISubSystemHost sender)
         {
             host = sender;

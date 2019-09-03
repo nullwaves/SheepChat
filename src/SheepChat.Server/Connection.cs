@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Sockets;
-using Common;
+﻿using System.Net.Sockets;
 using System;
 using SheepChat.Server.Interfaces;
 using System.Net;
@@ -17,6 +15,8 @@ namespace SheepChat.Server
         public IPAddress CurrentIPAddress { get; private set; }
         public byte[] Data { get; private set; }
         public StringBuilder Buffer { get; set; }
+        public string LastInputTerminator { get; set; }
+        public string LastRawInput { get; set; }
         #endregion
 
         #region Events
@@ -29,24 +29,6 @@ namespace SheepChat.Server
         private readonly Socket socket;
         #endregion
 
-        /* +++++ TODO: Eliminate between comments +++++ */
-        // TODO: Remove neccesity of defaults
-        // Statics
-        private static Dictionary<string, string> userdata = new Dictionary<string, string>();
-
-        // Sockets & Streams
-        private bool loggedin = false;
-        private string loggedinname = string.Empty;
-        private string mode = "none";
-        /* ++++++++++++++++++++++++++++++++++++++++++++ */
-
-        // Constructor for a fake connection from the server to process commands
-        // TODO: Remove neccesity
-        internal Connection(Dictionary<string, string> udata)
-        {
-            userdata = udata;
-        }
-
         // Constructor for new connections to the server
         public Connection(Socket socket, ISubSystem connectionHost)
         {
@@ -58,115 +40,6 @@ namespace SheepChat.Server
             ID = Guid.NewGuid().ToString();
             CurrentIPAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
             Data = new byte[1];
-        }
-
-        // Process input from the login state
-        // TODO: Refactor as ConnectionStates
-        private void Login(string data)
-        {
-            if (mode.Equals("none"))
-            {
-                //  User should be selecting an option
-                if (data.Equals("login"))
-                {
-                    mode = "login";
-                    Login(string.Empty);
-                }
-                else if (data.Equals("register"))
-                {
-                    mode = "register";
-                    Login(string.Empty);
-                }
-                else
-                {
-                    // No option has been selected yet.
-                    if (data != string.Empty)
-                    {
-                        Send("Not a valid option! Try Again!");
-                    }
-                    Send("Please Choose an Option:");
-                    Send("register");
-                    Send("login");
-                }
-            }
-            else if (mode.Equals("login"))
-            {
-                // User is logging in to an existing account
-                if (loggedin == false)
-                {
-                    if (loggedinname != string.Empty)
-                    {
-                        if (EncryptionHelper.Encrypt(data) == userdata[loggedinname])
-                        {
-                            Send("Successfully Logged in as " + loggedinname + "!");
-                            loggedin = true;
-                            //SendToAll(format(loggedinname + " logged in.", new Room().Name));
-                        }
-                        else if (data == "!back")
-                        {
-                            loggedinname = string.Empty;
-                        }
-                        else
-                        {
-                            Send("Wrong Password!");
-                        }
-                    }
-                    else if (data == string.Empty)
-                    {
-                        Send("Enter your username:");
-                    }
-                    else
-                    {
-                        if (userdata.ContainsKey(data))
-                        {
-                            loggedinname = data;
-                            Send("Enter Your Password:");
-                        }
-                        else
-                        {
-                            Send("Username does not exist!");
-                        }
-                    }
-                }
-            }
-            else if (mode.Equals("register"))
-            {
-                // User is attempting to register a new account
-                if (!loggedin)
-                {
-                    if (loggedinname != string.Empty)
-                    {
-                        if (!userdata.ContainsKey(loggedinname))
-                        {
-                            userdata.Add(loggedinname, EncryptionHelper.Encrypt(data.Trim()));
-                            Server.SaveUserData(userdata);
-                            Send("Account created with username " + loggedinname + " and password " + data.Trim());
-                            mode = "login";
-                            Login(data.Trim());
-                        }
-                    }
-                    else
-                    {
-                        if (data == string.Empty)
-                        {
-                            Send("Enter Username: ");
-                        }
-                        else
-                        {
-                            if (!userdata.ContainsKey(data))
-                            {
-                                loggedinname = data;
-                                Send("Account Name \"" + data + "\" is available!");
-                                Send("Enter Password: ");
-                            }
-                            else
-                            {
-                                Send("Username already exists!");
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         internal void BeginListen()
@@ -260,45 +133,6 @@ namespace SheepChat.Server
                 socket.Close();
             }
             ClientDisconnected(this, new ConnectionArgs(this));
-        }
-
-        // General command processing
-        // TODO: Refactor as a CommandManager component of a ConnectionState
-        public void ProcessLine(string input)
-        {
-            if (input.StartsWith("/") == false)
-            {
-                // Client is just sending text, pass on to others
-                if (!loggedin)
-                {
-                    Login(input);
-                }
-                else Send(Format(input, new Room().Name));
-            }
-            else
-            {
-                // Clint is trying to proccess a command
-                string[] args = input.Substring(1).Split(' ');
-                if (args.Length < 1) Login("");
-                switch (args[0])
-                {
-                    case "help":
-                        Send("you typed /help"); // Great helpful command here.
-                        break;
-                    case "list":
-                        throw new NotImplementedException();
-                        //string lists = "";
-                        //lists = lists.Substring(0, lists.Length - 2);
-                        //Send("Online Users: " + lists);
-                        //break;
-                    case "quit":
-                        this.OnDisconnect();
-                        break;
-                    default:
-                        Send("Invalid Command");
-                        break;
-                }
-            }
         }
 
         // Formatting for chat messages to be sent to the clients

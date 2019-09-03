@@ -1,6 +1,5 @@
 ﻿using SheepChat.Server.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace SheepChat.Server

@@ -1,5 +1,6 @@
 ﻿using SheepChat.Server.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace SheepChat.Server
 {
@@ -9,7 +10,7 @@ namespace SheepChat.Server
 
         private readonly Server server = new Server();
 
-        // private readonly InputParser parser = new InputParser();
+        private readonly InputSanitizer sanitizer = new InputSanitizer();
 
         public DateTime UpTime;
 
@@ -28,7 +29,7 @@ namespace SheepChat.Server
             server.DataReceived += Server_DataReceived;
             server.DataSent += Server_DataSent;
 
-            // parser.InputReceived += Parser_InputReceived;
+            sanitizer.InputReceived += Sanitizer_InputReceived;
         }
 
         private void Server_DataSent(object sender, ConnectionArgs e)
@@ -39,6 +40,30 @@ namespace SheepChat.Server
         private void Server_DataReceived(object sender, ConnectionArgs e)
         {
             // Process Incoming Data
+            var connection = e.Connection;
+            var data = connection.Data;
+
+            var buffer = new List<byte>();
+            foreach(byte b in data)
+            {
+                switch (b)
+                {
+                    case 10:
+                    case 13:
+                    case byte n when (n > 31 && n < 127):
+                        buffer.Add(b);
+                        break;
+                    case 8:
+                    case 127:
+                        if (connection.Buffer.Length > 0)
+                        {
+                            connection.Buffer.Remove(connection.Buffer.Length - 1, 1);
+                        }
+                        break;
+                }
+            }
+
+            sanitizer.OnDataReceived(connection, buffer.ToArray());
         }
 
         private void Server_ClientDisconnected(object sender, ConnectionArgs e)
@@ -51,6 +76,11 @@ namespace SheepChat.Server
         {
             UpdateSubSystemHost((ISubSystem)sender, e.Connection.ID + " - Connected");
             SessionManager.Instance.OnSessionConnect(e.Connection);
+        }
+
+        private void Sanitizer_InputReceived(object sender, ConnectionArgs args, string input)
+        {
+            SessionManager.Instance.OnInputReceived(args.Connection, input);
         }
 
         public override void Start()

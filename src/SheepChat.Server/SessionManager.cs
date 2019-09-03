@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SheepChat.Server.Interfaces;
 using SheepChat.Server.Sessions;
 
@@ -36,6 +37,17 @@ namespace SheepChat.Server
             }
         }
 
+        public void OnInputReceived(IConnection conn, string input)
+        {
+            Session session = null;
+            lock(Sessions)
+            {
+                session = Sessions.ContainsKey(conn.ID) ? Sessions[conn.ID] : null;
+            }
+
+            session?.ProcessInput(input);
+        }
+
         public override void Start()
         {
             SystemHost.UpdateSystemHost(this, "Starting...");
@@ -59,7 +71,7 @@ namespace SheepChat.Server
 
         private Session CreateSession(IConnection connection)
         {
-            connection.Send("Status: Connected");
+            connection.Send("Status: Connected" + Environment.NewLine);
 
             var sess = new Session(connection);
             sess.SessionAuthenticated += OnSessionAuthenticated;

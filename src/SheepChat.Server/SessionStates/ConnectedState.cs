@@ -11,7 +11,7 @@ namespace SheepChat.Server.SessionStates
             if (session == null) return;
             Session.Write("Welcome to SheepChat!" + Environment.NewLine);
             Session.Write("Returning users can login by typing their username; new users can register an account by typing: NEW" + Environment.NewLine);
-            Session.Write(" >");
+            Session.Write(">");
         }
 
         public ConnectedState() : this(null) { }

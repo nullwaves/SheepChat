@@ -38,6 +38,7 @@ namespace SheepChat.Server
             this.connectionHost = connectionHost;
 
             ID = Guid.NewGuid().ToString();
+            Buffer = new StringBuilder();
             CurrentIPAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
             Data = new byte[1];
         }

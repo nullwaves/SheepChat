@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System;
 using SheepChat.Server.Interfaces;
 
@@ -62,12 +60,6 @@ namespace SheepChat.Server
         public Server(int port)
         {
             Port = (port > 65535 || port < 1) ? 23 : port;
-
-            // Load usernames and passwords
-            Dictionary<string, string> udata = LoadUserData();
-            // Save just incase?
-            SaveUserData(udata);
-
         }
 
         /// <summary>
@@ -130,67 +122,6 @@ namespace SheepChat.Server
         private void HandleDataSent(object sender, ConnectionArgs e)
         {
             DataSent?.Invoke(sender, e);
-        }
-
-        // Load userdata from a flat file
-        public static Dictionary<string, string> LoadUserData()
-        {
-            Dictionary<string, string> users = new Dictionary<string, string>();
-
-            if (File.Exists("user.dat"))
-            {
-                string ins = Encoding.UTF8.GetString(File.ReadAllBytes("user.dat"));
-                string[] pairs = ins.Split(';');
-                foreach (string str in pairs)
-                {
-                    string[] str2 = str.Split(':');
-                    if (str2[0] == "&") break;
-                    users.Add(str2[0], str2[1]);
-                }
-            }
-            else
-            {
-                SaveUserData(users);
-            }
-
-            return users;
-        }
-
-        // Save userdata to a flat file
-        public static void SaveUserData(Dictionary<string, string> udata)
-        {
-            string strdata = "";
-            foreach (KeyValuePair<string, string> str in udata)
-            {
-                strdata += str.Key + ":" + str.Value + ";";
-            }
-            strdata += "&";
-
-            byte[] outs = Encoding.UTF8.GetBytes(strdata);
-
-            File.WriteAllBytes("user.dat", outs);
-        }
-
-        // Helper function to filter input from connections
-        public static string ReplaceBackspace(string hasBackspace)
-        {
-            if (string.IsNullOrEmpty(hasBackspace))
-                return hasBackspace;
-
-            StringBuilder result = new StringBuilder(hasBackspace.Length);
-            foreach (char c in hasBackspace)
-            {
-                if (c == '\b')
-                {
-                    if (result.Length > 0)
-                        result.Length--;
-                }
-                else
-                {
-                    result.Append(c);
-                }
-            }
-            return result.ToString();
         }
 
         /// <summary>

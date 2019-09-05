@@ -18,6 +18,7 @@ namespace SheepChat.Server.SessionStates
 
         public override void ProcessInput(string command)
         {
+            command = command.Replace("\r", string.Empty);
             var args = command.Split(new char[] { ' ' });
             string i = args.Length > 0 ? args[0] : string.Empty;
             switch (i.ToLower())

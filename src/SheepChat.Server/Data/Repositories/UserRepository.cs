@@ -24,17 +24,15 @@ namespace SheepChat.Server.Data.Repositories
 
         public static User Create(string username, string password)
         {
-            using (var repo = DataManager.OpenDocumentSession<User>())
+            User user = new User
             {
-                User user = new User {
-                    Username = username,
-                    Registered = DateTime.Now,
-                    UserRole = UserRole.Member
-                };
+                Username = username,
+                Registered = DateTime.Now,
+                UserRole = UserRole.Member
+            };
 
-                user = SetPassword(user, password);
-                return user;
-            }
+            user = SetPassword(user, password);
+            return user;
         }
 
         public static User SetPassword(User user, string password)

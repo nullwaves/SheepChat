@@ -6,6 +6,6 @@ namespace SheepChat.Server.Data
     {
         string Name { get; }
         void Prepare();
-        IDocumentSession<T> OpenDocumentSession<T>();
+        IDocumentSession<T> OpenDocumentSession<T>() where T : DocumentBase;
     }
 }

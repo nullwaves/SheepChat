@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using LiteDB;
+using System;
 
 namespace SheepChat.Server.Data
 {
@@ -8,9 +7,9 @@ namespace SheepChat.Server.Data
     {
         public string Name => "LiteDb";
 
-        public IDocumentSession<T> OpenDocumentSession<T>()
+        public IDocumentSession<T> OpenDocumentSession<T>() where T : DocumentBase
         {
-            return new LiteDbDocumentSession();
+            return new LiteDbDocumentSession<T>();
         }
 
         public void Prepare()

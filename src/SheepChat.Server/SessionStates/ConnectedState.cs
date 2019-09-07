@@ -18,7 +18,6 @@ namespace SheepChat.Server.SessionStates
 
         public override void ProcessInput(string command)
         {
-            command = command.Replace("\r", string.Empty);
             var args = command.Split(new char[] { ' ' });
             string i = args.Length > 0 ? args[0] : string.Empty;
             switch (i.ToLower())
@@ -35,7 +34,7 @@ namespace SheepChat.Server.SessionStates
                     Session.Connection.Disconnect();
                     break;
                 default:
-                    Session.State = new LoginState(Session);
+                    Session.State = new LoginState(Session, command);
                     Session.Write();
                     break;
             }

@@ -40,7 +40,7 @@ namespace SheepChat.Server.SessionStates
                     if(_password == command)
                     {
                         var user = UserRepository.Create(_username, _password);
-                        Session.User = user;
+                        Session.AuthenticateSession(user);
                         Session.Write("<#white><#bblack><#normal>");
                         Session.State = new ChattingState(Session);
                         return;

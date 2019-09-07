@@ -40,13 +40,12 @@ namespace SheepChat.Server
                     if(i < commands.Length-1 || (isFinished && i == commands.Length-1))
                     {
                         sender.LastRawInput = currLine;
-                        InputReceived?.Invoke(this, new ConnectionArgs(sender), input);
+                        InputReceived?.Invoke(this, new ConnectionArgs(sender), currLine.Trim());
                     }
                 }
 
                 sender.Buffer.Clear();
                 if (!isFinished) sender.Buffer.Append(currLine);
-
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using SheepChat.Server.Data.Models;
 using SheepChat.Server.Interfaces;
+using System;
 
 namespace SheepChat.Server.Sessions
 {
@@ -16,7 +17,7 @@ namespace SheepChat.Server.Sessions
 
         public SessionState State { get; set; }
 
-        public User User { get; set; }
+        public User User { get; private set; }
 
         public delegate void SessionAuthenticatedEventHandler(Session session);
 
@@ -32,8 +33,9 @@ namespace SheepChat.Server.Sessions
             }
         }
 
-        public void AuthenticateSession()
+        public void AuthenticateSession(User user)
         {
+            if (User == null) throw new ArgumentNullException("user", "Authenticated user cannot be null!");
             SessionAuthenticated?.Invoke(this);
         }
 

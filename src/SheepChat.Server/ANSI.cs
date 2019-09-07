@@ -1,4 +1,4 @@
-﻿namespace SheepChat.Server.ANSI
+﻿namespace SheepChat.Server
 {
     public class ANSI
     {
@@ -171,7 +171,7 @@
         /// <param name="direction">Direction to move.</param>
         /// <param name="numRowsOrCols">Number of rows or columns to move respectively.</param>
         /// <returns>Formatted ANSI sequence as a string.</returns>
-        public static string MoveCursor(MoveDirection direction, int numRowsOrCols) => Escape + string.Format("[{0}{1}", numRowsOrCols, direction);
+        public static string MoveCursor(MoveDirection direction, int numRowsOrCols) => Escape + string.Format("[{0}{1}", numRowsOrCols, (char)direction);
 
         /// <summary>
         /// ANSI sequence to move the cursor to a specific location.

@@ -30,7 +30,7 @@ namespace SheepChat.Server.Data
             SystemHost.UpdateSystemHost(this, "Stopped.");
         }
 
-        public static IDocumentSession<T> OpenDocumentSession<T>()
+        public static IDocumentSession<T> OpenDocumentSession<T>() where T : DocumentBase
         {
             return configuredDocumentStorageProvider.OpenDocumentSession<T>();
         }

@@ -2,18 +2,19 @@
 using System;
 using System.Linq;
 using BCrypt;
+using System.Collections.Generic;
 
 namespace SheepChat.Server.Data.Repositories
 {
     public static class UserRepository
     {
-        public static IOrderedQueryable<User> All
+        public static IEnumerable<User> All
         {
             get
             {
                 using (var repo = DataManager.OpenDocumentSession<User>())
                 {
-                    return repo.Query<User>();
+                    return repo.Query();
                 }
             }
         }
@@ -50,7 +51,7 @@ namespace SheepChat.Server.Data.Repositories
         {
             using (var repo = DataManager.OpenDocumentSession<User>())
             {
-                var user = (from u in repo.Query<User>()
+                var user = (from u in repo.Query()
                             where u.Username.Equals(username)
                             select u).FirstOrDefault();
 

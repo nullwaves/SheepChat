@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SheepChat.Server.Data
@@ -35,9 +36,9 @@ namespace SheepChat.Server.Data
         }
 
 #pragma warning disable CS0693
-        public IOrderedQueryable<T> Query<T>()
+        public IEnumerable<T> Query()
         {
-            return (IOrderedQueryable<T>)Collection.FindAll();
+            return Collection.FindAll();
         }
 #pragma warning restore CS0693
 

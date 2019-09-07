@@ -12,6 +12,11 @@ namespace SheepChat.Server
         private readonly ISubSystem connectionHost;
 #pragma warning restore IDE0052
 
+        /// <summary>
+        /// IAC DO SUPPRESS_LOCAL_ECHO
+        /// </summary>
+        private static readonly byte[] IACSLE = new byte[] { 0xFF, 0xFD, 0x2D };
+
         #region Connection Information
         public string ID { get; private set; }
         public IPAddress CurrentIPAddress { get; private set; }
@@ -43,6 +48,8 @@ namespace SheepChat.Server
             Buffer = new StringBuilder();
             CurrentIPAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
             Data = new byte[1];
+
+            //this.Send(IACSLE);
         }
 
         internal void BeginListen()
@@ -55,7 +62,7 @@ namespace SheepChat.Server
             try
             {
                 int charCount = socket.EndReceive(ar);
-                if(charCount == 0)
+                if (charCount == 0)
                 {
                     OnDisconnect();
                 }

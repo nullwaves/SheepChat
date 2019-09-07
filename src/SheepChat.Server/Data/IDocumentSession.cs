@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace SheepChat.Server.Data
 {
@@ -21,9 +21,9 @@ namespace SheepChat.Server.Data
         /// Gets a queryable object for the repo.
         /// </summary>
         /// <typeparam name="T">Document Type</typeparam>
-        /// <returns>IOrderedQueryable object</returns>
+        /// <returns>IEnumerable<typeparamref name="T"/> object</returns>
 #pragma warning disable CS0693
-        IOrderedQueryable<T> Query<T>();
+        IEnumerable<T> Query();
 #pragma warning restore CS0693
 
         /// <summary>

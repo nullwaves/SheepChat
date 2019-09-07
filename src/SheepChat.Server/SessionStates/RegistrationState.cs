@@ -8,7 +8,7 @@ namespace SheepChat.Server.SessionStates
     {
         private int substate;
 
-        private string[] substates = {
+        private readonly string[] substates = {
             "Enter a username:",
             "Enter a password:<#bblack><#black>",
             "<#white>Enter password again:<#black>"

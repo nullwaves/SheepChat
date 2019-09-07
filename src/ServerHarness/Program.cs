@@ -8,15 +8,17 @@ namespace ServerHarness
     {
         static void Main(string[] args)
         {
-            ServerManager server = ServerManager.Instance;
-            server.SubscribeToSystemHost(new ConsoleUpdater());
-            server.Start();
+            Application app = new Application();
+            app.Start();
 
             while(true)
             {
                 var s = Console.ReadLine();
                 if (s == "quit")
-                    server.Stop();
+                {
+                    app.Stop();
+                    break;
+                }
             }
         }
     }

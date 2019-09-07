@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Composition;
 
 namespace SheepChat.Server.Data
 {
@@ -7,5 +8,14 @@ namespace SheepChat.Server.Data
         string Name { get; }
         void Prepare();
         IDocumentSession<T> OpenDocumentSession<T>() where T : DocumentBase;
+    }
+
+    [MetadataAttribute]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class ExportDSPAttribute : ExportAttribute
+    {
+        public ExportDSPAttribute() : base(typeof(IDocumentStorageProvider))
+        {
+        }
     }
 }

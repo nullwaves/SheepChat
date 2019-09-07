@@ -39,13 +39,7 @@ namespace SheepChat.Server.Sessions
             defaultStateConstructor = defaultStateType.GetConstructor(new Type[] { typeof(Session) });
         }
 
-        public static SessionStateManager Instance
-        {
-            get
-            {
-                return Singleton;
-            }
-        }
+        public static SessionStateManager Instance => Singleton;
 
         [ImportMany]
         public Lazy<SessionState, ExportSessionStateAttribute>[] States { get; set; }

@@ -1,8 +1,8 @@
-﻿using LiteDB;
-using System;
+﻿using System;
 
 namespace SheepChat.Server.Data
 {
+    [ExportDSP]
     class LiteDbDocumentStorageProvider : IDocumentStorageProvider
     {
         public string Name => "LiteDb";
@@ -14,7 +14,6 @@ namespace SheepChat.Server.Data
 
         public void Prepare()
         {
-            throw new NotImplementedException();
         }
     }
 }

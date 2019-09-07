@@ -51,5 +51,14 @@ namespace SheepChat.Server
                     );
             }
         }
+
+        public static string Format(string data)
+        {
+            foreach(KeyValuePair<string,string> kvp in Shortcodes)
+            {
+                data = data.Replace("<#" + kvp.Key + ">", kvp.Value);
+            }
+            return data;
+        }
     }
 }

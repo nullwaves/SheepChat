@@ -8,7 +8,9 @@ namespace SheepChat.Server
 {
     internal class Connection : IConnection
     {
+#pragma warning disable IDE0052
         private readonly ISubSystem connectionHost;
+#pragma warning restore IDE0052
 
         #region Connection Information
         public string ID { get; private set; }
@@ -63,8 +65,9 @@ namespace SheepChat.Server
                     BeginListen();
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 OnDisconnect();
             }
         }
@@ -90,8 +93,15 @@ namespace SheepChat.Server
         /// Send string of data over the connection.
         /// </summary>
         /// <param name="data">The string to send.</param>
-        public void Send(string data)
+        public void Send(string data) => Send(data, false);
+
+        /// <summary>
+        /// Send string of data over the connection.
+        /// </summary>
+        /// <param name="data">The string to send.</param>
+        public void Send(string data, bool bypassFormatter)
         {
+            data = !bypassFormatter ? ANSIShortcodeFormatter.Format(data) : data;
             byte[] bytes;
             bytes = Encoding.GetEncoding(437).GetBytes(data);
             Send(bytes);

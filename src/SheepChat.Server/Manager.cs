@@ -4,6 +4,7 @@ namespace SheepChat.Server
 {
     public abstract class Manager : ISystem
     {
+        public abstract string Name { get; }
         public ISystemHost SystemHost { get; private set; }
 
         protected readonly object Lock = new object();

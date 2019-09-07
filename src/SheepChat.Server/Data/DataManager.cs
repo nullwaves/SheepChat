@@ -1,17 +1,28 @@
-﻿using System;
+﻿using SheepChat.Server.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
-using System.Text;
 
 namespace SheepChat.Server.Data
 {
-    public class DataManager : Manager
+    public class DataManager : Manager, IRecomposable
     {
+        public override string Name { get { return "Database"; } }
+
+        private static readonly DataManager Singleton = new DataManager();
+
+        public static DataManager Instance => Singleton;
+
         [ImportMany]
-        public List<IDocumentStorageProvider> DocumentStorageProviders { get; set; }
+        public IEnumerable<IDocumentStorageProvider> DocumentStorageProviders { get; set; }
 
         private static IDocumentStorageProvider configuredDocumentStorageProvider;
+
+        public DataManager()
+        {
+            Recompose();
+        }
 
         public override void Start()
         {
@@ -34,5 +45,18 @@ namespace SheepChat.Server.Data
         {
             return configuredDocumentStorageProvider.OpenDocumentSession<T>();
         }
+
+        public void Recompose()
+        {
+            Composer.Compose(this);
+        }
+    }
+
+    [ExportInstance]
+    public class DataManagerInstance : InstanceExporter
+    {
+        public override ISystem Instance => DataManager.Instance;
+
+        public override Type InstanceType => typeof(DataManager);
     }
 }

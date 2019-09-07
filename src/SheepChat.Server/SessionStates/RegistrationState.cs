@@ -1,4 +1,5 @@
-﻿using SheepChat.Server.Sessions;
+﻿using SheepChat.Server.Data.Repositories;
+using SheepChat.Server.Sessions;
 using System;
 
 namespace SheepChat.Server.SessionStates
@@ -9,8 +10,8 @@ namespace SheepChat.Server.SessionStates
 
         private string[] substates = {
             "Enter a username:",
-            "Enter a password:",
-            "Enter password again:"
+            "Enter a password:<#bblack><#black>",
+            "<#white>Enter password again:<#black>"
         };
 
         private string _username = "";
@@ -38,15 +39,15 @@ namespace SheepChat.Server.SessionStates
                 case 2:
                     if(_password == command)
                     {
-                        //var user = UserRepository.CreateUser(_username, _password);
-                        //Session.User = user;
-                        //Session.State = new ChattingState(Session);
-                        Session.Write();
+                        var user = UserRepository.Create(_username, _password);
+                        Session.User = user;
+                        Session.Write("<#white><#bblack><#normal>");
+                        Session.State = new ChattingState(Session);
                         return;
                     }
                     else
                     {
-                        Session.Write("Passwords did not match!" + Environment.NewLine);
+                        Session.Write("<#magenta>Passwords did not match!<#white>" + Environment.NewLine);
                         substate--;
                     }
                     break;

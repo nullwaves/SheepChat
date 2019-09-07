@@ -1,11 +1,14 @@
 ﻿using SheepChat.Server.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Composition;
 
 namespace SheepChat.Server
 {
     public class ServerManager : Manager
     {
+        public override string Name { get { return "Server"; } }
+
         private static readonly ServerManager Singleton = new ServerManager();
 
         private readonly Server server = new Server();
@@ -14,13 +17,7 @@ namespace SheepChat.Server
 
         public DateTime UpTime;
 
-        public static ServerManager Instance
-        {
-            get
-            {
-                return Singleton;
-            }
-        }
+        public static ServerManager Instance => Singleton;
 
         private ServerManager()
         {
@@ -100,5 +97,13 @@ namespace SheepChat.Server
 
             SystemHost.UpdateSystemHost(this, "Stopped");
         }
+    }
+
+    [ExportInstance]
+    public class ServerManagerInstance : InstanceExporter
+    {
+        public override ISystem Instance => ServerManager.Instance;
+
+        public override Type InstanceType => typeof(ServerManager);
     }
 }

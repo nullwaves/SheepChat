@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition;
 using SheepChat.Server.Interfaces;
 using SheepChat.Server.Sessions;
 
@@ -7,15 +8,11 @@ namespace SheepChat.Server
 {
     public class SessionManager : Manager
     {
+        public override string Name { get { return "Session"; } }
+
         private static readonly SessionManager Singleton = new SessionManager();
 
-        public static SessionManager Instance
-        {
-            get
-            {
-                return Singleton;
-            }
-        }
+        public static SessionManager Instance => Singleton;
 
         public Dictionary<string, Session> Sessions { get; private set; }
 
@@ -102,5 +99,13 @@ namespace SheepChat.Server
                 }
             }
         }
+    }
+
+    [ExportInstance]
+    public class SessionManagerInstance : InstanceExporter
+    {
+        public override ISystem Instance => SessionManager.Instance;
+
+        public override Type InstanceType => typeof(SessionManager);
     }
 }

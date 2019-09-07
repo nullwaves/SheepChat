@@ -53,6 +53,13 @@ namespace SheepChat.Server.Interfaces
         void Send(string data);
 
         /// <summary>
+        /// Send data to the conneciton.
+        /// </summary>
+        /// <param name="data">The string to send.</param>
+        /// <param name="bypassFormatter">Wheter or not the string should be formatted before being sent.</param>
+        void Send(string data, bool bypassFormatter);
+
+        /// <summary>
         /// Utilize buffer to produce output.
         /// </summary>
         void ProcessBuffer();

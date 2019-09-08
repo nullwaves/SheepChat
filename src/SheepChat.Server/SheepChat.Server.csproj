@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <UseNETCoreGenerator>true</UseNETCoreGenerator>
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 

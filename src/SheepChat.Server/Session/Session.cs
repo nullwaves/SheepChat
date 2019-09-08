@@ -15,13 +15,26 @@ namespace SheepChat.Server.Sessions
             get { return Connection.ID; }
         }
 
-        public SessionState State { get; set; }
+        private SessionState _state;
+
+        public SessionState State 
+        { 
+            get
+            {
+                return _state;
+            }
+            set 
+            {
+                _state?.OnLeaveState();
+                _state = value;
+            } 
+        }
 
         public User User { get; private set; }
 
-        public delegate void SessionAuthenticatedEventHandler(Session session);
+        public delegate void SessionEventHandler(Session session);
 
-        public event SessionAuthenticatedEventHandler SessionAuthenticated;
+        public event SessionEventHandler SessionAuthenticated;
 
         public Session(IConnection conn)
         {
@@ -29,7 +42,7 @@ namespace SheepChat.Server.Sessions
             {
                 Connection = conn;
                 State = SessionStateManager.Instance.CreateDefaultState(this);
-                conn.Send(string.Empty);
+                Connection.Send(string.Empty);
             }
         }
 

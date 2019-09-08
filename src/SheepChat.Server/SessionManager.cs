@@ -10,9 +10,7 @@ namespace SheepChat.Server
     {
         public override string Name { get { return "Session"; } }
 
-        private static readonly SessionManager Singleton = new SessionManager();
-
-        public static SessionManager Instance => Singleton;
+        public static SessionManager Instance { get; } = new SessionManager();
 
         public Dictionary<string, Session> Sessions { get; private set; }
 
@@ -30,6 +28,7 @@ namespace SheepChat.Server
         {
             lock(Sessions)
             {
+                Sessions[conn.ID].State = null;
                 RemoveSession(conn.ID);
             }
         }

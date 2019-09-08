@@ -14,6 +14,7 @@ namespace SheepChat.Server.Sessions
 
         public abstract void ProcessInput(string command);
 
+        public virtual void OnLeaveState() {}
     }
 
     [MetadataAttribute]

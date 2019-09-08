@@ -10,9 +10,7 @@ namespace SheepChat.Server.Data
     {
         public override string Name { get { return "Database"; } }
 
-        private static readonly DataManager Singleton = new DataManager();
-
-        public static DataManager Instance => Singleton;
+        public static DataManager Instance { get; } = new DataManager();
 
         [ImportMany]
         public IEnumerable<IDocumentStorageProvider> DocumentStorageProviders { get; set; }

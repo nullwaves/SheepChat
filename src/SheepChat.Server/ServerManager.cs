@@ -1,7 +1,6 @@
 ﻿using SheepChat.Server.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Composition;
 
 namespace SheepChat.Server
 {
@@ -9,15 +8,13 @@ namespace SheepChat.Server
     {
         public override string Name { get { return "Server"; } }
 
-        private static readonly ServerManager Singleton = new ServerManager();
-
         private readonly Server server = new Server();
 
         private readonly InputSanitizer sanitizer = new InputSanitizer();
 
         public DateTime UpTime;
 
-        public static ServerManager Instance => Singleton;
+        public static ServerManager Instance { get; } = new ServerManager();
 
         private ServerManager()
         {

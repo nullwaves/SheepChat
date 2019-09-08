@@ -1,18 +1,31 @@
 ﻿using SheepChat.Server.Sessions;
 using System;
+using System.Collections.Generic;
 
 namespace SheepChat.Server.SessionStates
 {
     internal class ChattingState : SessionState
     {
+        private static List<Session> Who = new List<Session>();
+
         public ChattingState(Session session) : base(session)
         {
+            Who.Add(session);
             Session.Write("You are now \"<#bold><#red>Chatting...<#normal><#white>\"" + Environment.NewLine);
         }
 
         public override void ProcessInput(string command)
         {
-            Session.Write("You: " + command + Environment.NewLine, true);
+            string msg = string.Format("{0}: {1}{2}", Session.User.Username, command, Environment.NewLine);
+            foreach(Session sess in Who)
+            {
+                sess?.Write(msg);
+            }
+        }
+
+        public override void OnLeaveState()
+        {
+            Who.Remove(Session);
         }
     }
 }

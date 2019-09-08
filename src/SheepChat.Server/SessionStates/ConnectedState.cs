@@ -1,4 +1,5 @@
 ﻿using System;
+using SheepChat.Server.Data.Repositories;
 using SheepChat.Server.Sessions;
 
 namespace SheepChat.Server.SessionStates
@@ -34,8 +35,16 @@ namespace SheepChat.Server.SessionStates
                     Session.Connection.Disconnect();
                     break;
                 default:
-                    Session.State = new LoginState(Session, command);
-                    Session.Write();
+                    var user = UserRepository.FindByUsername(command);
+                    if (user != null)
+                    {
+                        Session.State = new LoginState(Session, user);
+                    }
+                    else
+                    {
+                        Session.Write("<#magenta>Cannot find user with that username." + Environment.NewLine);
+                        Session.Write("<#white>>");
+                    }
                     break;
             }
         }

@@ -19,7 +19,7 @@ namespace SheepChat.Server.SessionStates
             string msg = string.Format("{0}: {1}{2}", Session.User.Username, command, Environment.NewLine);
             foreach(Session sess in Who)
             {
-                sess?.Write(msg);
+                sess?.Write(msg, true);
             }
         }
 

@@ -49,6 +49,7 @@ namespace SheepChat.Server.Sessions
         public void AuthenticateSession(User user)
         {
             if (user == null) throw new ArgumentNullException("user", "Authenticated user cannot be null!");
+            User = user;
             SessionAuthenticated?.Invoke(this);
         }
 

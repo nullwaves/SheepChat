@@ -33,11 +33,11 @@ namespace SheepChat.Server.Data.Repositories
             };
 
             user = SetPassword(user, password);
-            
+
             using (var repo = DataManager.OpenDocumentSession<User>())
             {
                 var nameTaken = (from u in repo.Query() where u.Username.ToLower().Equals(user.Username.ToLower()) select u).FirstOrDefault();
-                if(nameTaken == null)
+                if (nameTaken == null)
                 {
                     repo.Insert(user);
                 }
@@ -50,6 +50,17 @@ namespace SheepChat.Server.Data.Repositories
             return user;
         }
 
+        public static User FindByUsername(string username)
+        {
+            using (var repo = DataManager.OpenDocumentSession<User>())
+            {
+                var user = (from u in repo.Query()
+                            where u.Username.Equals(username)
+                            select u).FirstOrDefault();
+                return user;
+            }
+        }
+
         public static User SetPassword(User user, string password)
         {
             using (var repo = DataManager.OpenDocumentSession<User>())
@@ -60,22 +71,15 @@ namespace SheepChat.Server.Data.Repositories
             }
         }
 
-        public static User Authenticate(string username, string password)
+        public static User Authenticate(User user, string password)
         {
-            using (var repo = DataManager.OpenDocumentSession<User>())
+            if (user == null) return null;
+            if (BCryptHelper.CheckPassword(password, user.Password))
             {
-                var user = (from u in repo.Query()
-                            where u.Username.Equals(username)
-                            select u).FirstOrDefault();
-
-                if (user == null) return null;
-                if (BCryptHelper.CheckPassword(password, user.Password))
-                {
-                    user.LastLogin = DateTime.Now;
-                    return user;
-                }
-                return null;
+                user.LastLogin = DateTime.Now;
+                return user;
             }
+            return null;
         }
     }
 }

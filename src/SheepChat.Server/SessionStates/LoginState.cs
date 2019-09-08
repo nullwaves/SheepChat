@@ -8,22 +8,21 @@ namespace SheepChat.Server.SessionStates
 {
     internal class LoginState : SessionState
     {
-        private readonly string _username;
+        private readonly User _user;
 
-
-        public LoginState(Session session, string username) : base(session)
+        public LoginState(Session session, User user) : base(session)
         {
-            _username = username;
+            _user = user;
             Session.Write("<#white>Password: <#black><#bblack>");
         }
 
         public override void ProcessInput(string command)
         {
-            User u = UserRepository.Authenticate(_username, command);
+            User u = UserRepository.Authenticate(_user, command);
             if (u != null)
             {
                 Session.AuthenticateSession(u);
-                Session.Write("<#white>Successfully logged in as " + _username + Environment.NewLine);
+                Session.Write("<#white>Successfully logged in as " + _user.Username + Environment.NewLine);
                 Session.State = new ChattingState(Session);
             }
             else

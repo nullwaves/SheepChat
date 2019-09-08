@@ -14,6 +14,7 @@ namespace SheepChat.Server.SessionStates
         public LoginState(Session session, string username) : base(session)
         {
             _username = username;
+            Session.Write("<#white>Password: <#black><#bblack>");
         }
 
         public override void ProcessInput(string command)

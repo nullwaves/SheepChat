@@ -33,6 +33,20 @@ namespace SheepChat.Server.Data.Repositories
             };
 
             user = SetPassword(user, password);
+            
+            using (var repo = DataManager.OpenDocumentSession<User>())
+            {
+                var nameTaken = (from u in repo.Query() where u.Username.ToLower().Equals(user.Username.ToLower()) select u).FirstOrDefault();
+                if(nameTaken == null)
+                {
+                    repo.Insert(user);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
             return user;
         }
 
@@ -42,7 +56,6 @@ namespace SheepChat.Server.Data.Repositories
             {
                 string hash = BCryptHelper.HashPassword(password, BCryptHelper.GenerateSalt());
                 user.Password = hash;
-                repo.Upsert(user);
                 return user;
             }
         }

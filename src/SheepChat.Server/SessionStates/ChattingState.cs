@@ -6,7 +6,7 @@ namespace SheepChat.Server.SessionStates
 {
     internal class ChattingState : SessionState
     {
-        private static readonly List<Session> Who = new List<Session>();
+        private static List<Session> Who = new List<Session>();
 
         public ChattingState(Session session) : base(session)
         {

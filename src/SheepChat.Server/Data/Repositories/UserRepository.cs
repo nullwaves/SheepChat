@@ -1,7 +1,6 @@
 ﻿using SheepChat.Server.Data.Models;
 using System;
 using System.Linq;
-using BCrypt;
 using System.Collections.Generic;
 
 namespace SheepChat.Server.Data.Repositories
@@ -65,7 +64,7 @@ namespace SheepChat.Server.Data.Repositories
         {
             using (var repo = DataManager.OpenDocumentSession<User>())
             {
-                string hash = BCryptHelper.HashPassword(password, BCryptHelper.GenerateSalt());
+                string hash = BCrypt.Net.BCrypt.HashPassword(password);
                 user.Password = hash;
                 return user;
             }
@@ -74,7 +73,7 @@ namespace SheepChat.Server.Data.Repositories
         public static User Authenticate(User user, string password)
         {
             if (user == null) return null;
-            if (BCryptHelper.CheckPassword(password, user.Password))
+            if (BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
                 user.LastLogin = DateTime.Now;
                 return user;

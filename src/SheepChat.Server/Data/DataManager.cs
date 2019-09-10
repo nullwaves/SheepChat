@@ -1,7 +1,7 @@
 ﻿using SheepChat.Server.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Composition;
+using System.ComponentModel.Composition;
 using System.Linq;
 
 namespace SheepChat.Server.Data

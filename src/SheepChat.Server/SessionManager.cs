@@ -27,7 +27,6 @@ namespace SheepChat.Server
         {
             lock(Sessions)
             {
-                Sessions[conn.ID].State = null;
                 RemoveSession(conn.ID);
             }
         }
@@ -39,7 +38,6 @@ namespace SheepChat.Server
             {
                 session = Sessions.ContainsKey(conn.ID) ? Sessions[conn.ID] : null;
             }
-
             session?.ProcessInput(input);
         }
 

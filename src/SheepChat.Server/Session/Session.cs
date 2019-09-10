@@ -41,6 +41,7 @@ namespace SheepChat.Server.Sessions
             if(conn != null)
             {
                 Connection = conn;
+                User = null;
                 State = SessionStateManager.Instance.CreateDefaultState(this);
                 Connection.Send(string.Empty);
             }
@@ -48,12 +49,21 @@ namespace SheepChat.Server.Sessions
 
         public void AuthenticateSession(User user)
         {
-            if (user == null) throw new ArgumentNullException("user", "Authenticated user cannot be null!");
-            User = user;
+            User = user ?? throw new ArgumentNullException("user", "Authenticated user cannot be null!");
             SessionAuthenticated?.Invoke(this);
         }
 
-        public void ProcessInput(string input) => State.ProcessInput(input);
+        public void ProcessInput(string input)
+        {
+            if (User != null && input.StartsWith(CommandManager.Instance.Trigger))
+            {
+                CommandManager.Instance.ProcessCommand(this, input.Substring(1));
+            }
+            else
+            {
+                State.ProcessInput(input);
+            }
+        }
 
         public void Write(string data, bool bypassFormatter = false)
         {

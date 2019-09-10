@@ -55,6 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="CommandManager.cs" />
+    <Compile Include="Commands\HelpCommand.cs" />
+    <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\IDocumentSession.cs" />

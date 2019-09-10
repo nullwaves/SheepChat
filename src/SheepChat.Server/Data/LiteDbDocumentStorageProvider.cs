@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SheepChat.Server.Data
+﻿namespace SheepChat.Server.Data
 {
     [ExportDSP]
     class LiteDbDocumentStorageProvider : IDocumentStorageProvider

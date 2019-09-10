@@ -9,9 +9,6 @@ namespace SheepChat.Server.Sessions
     public class SessionStateManager : IRecomposable
     {
         private static readonly object Lock = new object();
-
-        private static readonly SessionStateManager Singleton = new SessionStateManager();
-
         private ConstructorInfo defaultStateConstructor;
 
         private SessionStateManager()
@@ -39,7 +36,7 @@ namespace SheepChat.Server.Sessions
             defaultStateConstructor = defaultStateType.GetConstructor(new Type[] { typeof(Session) });
         }
 
-        public static SessionStateManager Instance => Singleton;
+        public static SessionStateManager Instance { get; } = new SessionStateManager();
 
         [ImportMany]
         public Lazy<SessionState, ExportSessionStateAttribute>[] States { get; set; }

@@ -38,7 +38,7 @@ namespace SheepChat.Server
             var data = connection.Data;
 
             var buffer = new List<byte>();
-            foreach(byte b in data)
+            foreach (byte b in data)
             {
                 switch (b)
                 {

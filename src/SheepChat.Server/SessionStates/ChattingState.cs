@@ -6,12 +6,13 @@ namespace SheepChat.Server.SessionStates
 {
     internal class ChattingState : SessionState
     {
-        private static List<Session> Who = new List<Session>();
+        private static readonly List<Session> Who = new List<Session>();
 
         public ChattingState(Session session) : base(session)
         {
             Who.Add(session);
             Session.Write("You are now \"<#bold><#red>Chatting...<#normal><#white>\"" + Environment.NewLine);
+            Session.Write("<#svcur>");
         }
 
         public override void ProcessInput(string command)
@@ -19,7 +20,9 @@ namespace SheepChat.Server.SessionStates
             string msg = string.Format("{0}: {1}{2}", Session.User.Username, command, Environment.NewLine);
             foreach(Session sess in Who)
             {
+                sess?.Write("<#ldcur>");
                 sess?.Write(msg, true);
+                sess?.Write("<#svcur>");
             }
         }
 

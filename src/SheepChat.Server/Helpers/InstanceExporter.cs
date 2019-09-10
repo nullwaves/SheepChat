@@ -1,6 +1,6 @@
 ﻿using SheepChat.Server.Interfaces;
 using System;
-using System.Composition;
+using System.ComponentModel.Composition;
 
 namespace SheepChat.Server
 {

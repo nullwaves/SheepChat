@@ -31,7 +31,7 @@ namespace SheepChat.Server
 
                 bool isFinished = input.Contains(NewLine);
 
-                string[] commands = input.Split(NewLine, StringSplitOptions.RemoveEmptyEntries);
+                string[] commands = input.Split(NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 string currLine = string.Empty;
 
                 for(int i = 0; i < commands.Length; i++)

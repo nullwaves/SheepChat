@@ -1,7 +1,8 @@
 ﻿using SheepChat.Server.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Composition;
+using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace SheepChat.Server
 {
@@ -9,7 +10,9 @@ namespace SheepChat.Server
     {
 
         [ImportMany]
-        public IEnumerable<InstanceExporter> Systems { get; set; }
+        public IEnumerable<InstanceExporter> AvailableSystems { get; set; }
+
+        public List<InstanceExporter> Systems { get; set; }
 
         public Application()
         {
@@ -41,7 +44,21 @@ namespace SheepChat.Server
 
         public void Recompose()
         {
-            Composer.Compose(this);
+            Composer.Container.ComposeParts(this);
+
+            var newSystems = new List<InstanceExporter>();
+            var uniqueSystemNames = (from s in AvailableSystems select s.InstanceType.FullName).Distinct().ToList();
+
+            foreach (var name in uniqueSystemNames)
+            {
+                newSystems.Add((from s in AvailableSystems
+                                where s.InstanceType.FullName == name
+                                orderby s.InstanceType.Assembly.GetName().Version descending
+                                select s)
+                                .FirstOrDefault());
+            }
+
+            Systems = newSystems;
         }
     }
 }

@@ -1,34 +1,34 @@
-﻿using System.Composition;
-using System.Composition.Hosting;
-using System.Composition.Convention;
+﻿using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
-using System.Runtime.Loader;
+using System.Reflection;
 using SheepChat.Server.Sessions;
 
 namespace SheepChat.Server
 {
     public static class Composer
     {
-        static readonly ContainerConfiguration configuration;
-        static readonly ConventionBuilder conventions;
+        public static CompositionContainer Container { get; set; }
 
         static Composer()
         {
-            string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll", SearchOption.AllDirectories);
-            var sel = files.Select(AssemblyLoadContext.Default.LoadFromAssemblyPath);
-            configuration = new ContainerConfiguration().WithAssemblies(sel.ToList());
+            var asm = Assembly.GetExecutingAssembly();
 
-            conventions = new ConventionBuilder();
-            conventions.ForTypesDerivedFrom(typeof(SessionState)).Export(x => x.AsContractType(typeof(SessionState)));
+            var asmCatalog = new AssemblyCatalog(asm);
+            var dirCatalog = new DirectoryCatalog(Path.GetDirectoryName(asm.Location));
+
+            Container = new CompositionContainer(
+                new AggregateCatalog(
+                    asmCatalog,
+                    dirCatalog
+                    ));
         }
 
         public static void Compose(object obj)
         {
-            using (var container = configuration.CreateContainer())
-            {
-                container.SatisfyImports(obj, conventions);
-            }
+            Container.ComposeParts(obj);
         }
     }
 }

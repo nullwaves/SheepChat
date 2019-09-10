@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Composition;
 using SheepChat.Server.Interfaces;
 using SheepChat.Server.Sessions;
 

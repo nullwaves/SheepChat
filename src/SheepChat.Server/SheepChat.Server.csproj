@@ -76,6 +76,7 @@
     <Compile Include="InputSanitizer.cs" />
     <Compile Include="Interfaces\IConnection.cs" />
     <Compile Include="Interfaces\IRecomposable.cs" />
+    <Compile Include="Interfaces\IRoom.cs" />
     <Compile Include="Interfaces\ISubSystem.cs" />
     <Compile Include="Interfaces\ISubSystemHost.cs" />
     <Compile Include="Interfaces\ISystem.cs" />
@@ -83,6 +84,8 @@
     <Compile Include="Interfaces\ISystemHost.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rooms\DefaultRoom.cs" />
+    <Compile Include="Rooms\Room.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerManager.cs" />
     <Compile Include="SessionManager.cs" />

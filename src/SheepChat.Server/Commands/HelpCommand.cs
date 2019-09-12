@@ -36,7 +36,7 @@ namespace SheepChat.Server.Commands
             {
                 var key = args[0];
                 ICommand c = CommandManager.Instance.Dictionary.ContainsKey(key) ? CommandManager.Instance.Dictionary[key] : null;
-                sender.Write(c == null ? c.HelpPage : "<#magenta>Could not find any information on \"$key\"\r<#white>");
+                sender.Write(c == null ? c.HelpPage : $"<#magenta>Could not find any information on \"{key}\"\r<#white>");
             }
             else
             {

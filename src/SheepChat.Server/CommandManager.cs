@@ -81,7 +81,7 @@ namespace SheepChat.Server
                     return;
                 }
                 ICommand c = Dictionary.ContainsKey(key) ? Dictionary[key] : null;
-                c?.Execute(sender, args.GetRange(0, args.Count - 1).ToArray());
+                c?.Execute(sender, args.GetRange(1, args.Count - 1).ToArray());
                 if (c == null)
                 {
                     sender.Write("<#magenta>Invalid Command<#white>" + Environment.NewLine);

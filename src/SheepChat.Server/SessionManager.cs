@@ -90,6 +90,7 @@ namespace SheepChat.Server
                 if(Sessions.ContainsKey(sessionId))
                 {
                     var sess = Sessions[sessionId];
+                    sess.State?.OnLeaveState();
                     sess.UnsubscribeToSystem();
                     Sessions.Remove(sessionId);
                 }

@@ -4,9 +4,17 @@ using SheepChat.Server.Sessions;
 
 namespace SheepChat.Server.SessionStates
 {
+    /// <summary>
+    /// SessionState for a freshly connected session, ovverides the default state.
+    /// To ovveride this as the defualt state, see <see cref="ExportSessionStateAttribute"/>
+    /// </summary>
     [ExportSessionState(100)]
     public class ConnectedState : SessionState
     {
+        /// <summary>
+        /// Constructor for sessionstate, welcome the connection and determine their user existence.
+        /// </summary>
+        /// <param name="session">Freshly connected session</param>
         public ConnectedState(Session session) : base(session)
         {
             if (session == null) return;
@@ -15,8 +23,15 @@ namespace SheepChat.Server.SessionStates
             Session.Write(">");
         }
 
+        /// <summary>
+        /// Generic constructor because MEF breaks without it.
+        /// </summary>
         public ConnectedState() : this(null) { }
 
+        /// <summary>
+        /// Handle the first initial commands from a user to determine whether they are logging in, registering, or quitting.
+        /// </summary>
+        /// <param name="command">Input from connection</param>
         public override void ProcessInput(string command)
         {
             var args = command.Split(new char[] { ' ' });

@@ -3,11 +3,21 @@ using System.Collections.Generic;
 
 namespace SheepChat.Server.Data
 {
+    /// <summary>
+    /// Abstract base class for an object to be used as a Document with our storage provider
+    /// </summary>
     public abstract class DocumentBase
     {
+        /// <summary>
+        /// Integer ID number of a document.
+        /// </summary>
         public int ID { get; protected set; }
     }
 
+    /// <summary>
+    /// A basic document session interface to allow the use of any service implemented over a <see cref="IDocumentStorageProvider"/> that provides a wrapper for this interface.
+    /// </summary>
+    /// <typeparam name="T">Document type that inherits <see cref="DocumentBase"/></typeparam>
     public interface IDocumentSession<T> : IDisposable where T : DocumentBase
     {
         /// <summary>
@@ -20,11 +30,8 @@ namespace SheepChat.Server.Data
         /// <summary>
         /// Gets a queryable object for the repo.
         /// </summary>
-        /// <typeparam name="T">Document Type</typeparam>
         /// <returns>IEnumerable<typeparamref name="T"/> object</returns>
-#pragma warning disable CS0693
         IEnumerable<T> Query();
-#pragma warning restore CS0693
 
         /// <summary>
         /// Insert a new document into storage.
@@ -41,7 +48,7 @@ namespace SheepChat.Server.Data
         /// <summary>
         /// Update a document already in storage.
         /// </summary>
-        /// <param name="entity">Updated document/param>
+        /// <param name="entity">Updated document</param>
         void Update(T entity);
 
         /// <summary>

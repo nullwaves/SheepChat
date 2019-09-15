@@ -3,6 +3,9 @@ using System.Text;
 
 namespace SheepChat.Server.Interfaces
 {
+    /// <summary>
+    /// Interface for the basic connection that allows all systems to interact with any wrapped connections.
+    /// </summary>
     public interface IConnection
     {
         /// <summary>

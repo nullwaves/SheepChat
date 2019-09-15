@@ -7,36 +7,68 @@ using System.Linq;
 
 namespace SheepChat.Server
 {
+    /// <summary>
+    /// Command manager system
+    /// </summary>
     public class CommandManager : Manager, IRecomposable
     {
+        /// <summary>
+        /// Singleton instance to prevent duplicate systems.
+        /// </summary>
         public static CommandManager Instance { get; } = new CommandManager();
+
+        /// <summary>
+        /// Manager system name
+        /// </summary>
         public override string Name => "CommandSystem";
 
+        /// <summary>
+        /// Loosely imported command types
+        /// </summary>
         [ImportMany]
         public Lazy<ICommand, ExportCommandAttribute>[] AvailableCommands { get; set; }
 
+        /// <summary>
+        /// Dictionary of commands in system.
+        /// </summary>
         public readonly Dictionary<string, ICommand> Dictionary;
 
+        /// <summary>
+        /// String trigger that a client uses to tell the system it wants to try a command.
+        /// </summary>
         public string Trigger { get; } = "$";
 
+        /// <summary>
+        /// Keywords that default to the user would like to disconnect.
+        /// </summary>
         public static readonly string[] QuitKeywords = new string[]
         {
             "stop",
             "quit",
+            "exit",
             "dc"
         };
 
-        public CommandManager()
+        /// <summary>
+        /// Private constructor to allow the singleton instance to be meaningful.
+        /// </summary>
+        private CommandManager()
         {
             Recompose();
             Dictionary = new Dictionary<string, ICommand>();
         }
 
+        /// <summary>
+        /// Compose any loose imports.
+        /// </summary>
         public void Recompose()
         {
             Composer.Compose(this);
         }
 
+        /// <summary>
+        /// Start the Command system.
+        /// </summary>
         public override void Start()
         {
             SystemHost.UpdateSystemHost(this, "Starting...");
@@ -59,6 +91,9 @@ namespace SheepChat.Server
             SystemHost.UpdateSystemHost(this, "Started");
         }
 
+        /// <summary>
+        /// Stopo the command system.
+        /// </summary>
         public override void Stop()
         {
             SystemHost.UpdateSystemHost(this, "Stopping...");
@@ -68,6 +103,11 @@ namespace SheepChat.Server
             SystemHost.UpdateSystemHost(this, "Stopped");
         }
 
+        /// <summary>
+        /// Parse incoming data for a valid base command, then pass it on to the proper handler.
+        /// </summary>
+        /// <param name="sender">Session attempting to execute the command</param>
+        /// <param name="command">Command trying to be executed</param>
         public void ProcessCommand(Session sender, string command)
         {
             var args = command.Split(' ').ToList();
@@ -91,11 +131,20 @@ namespace SheepChat.Server
         }
     }
 
+    /// <summary>
+    /// Singleton instance exporter for the Command manager system.
+    /// </summary>
     [ExportInstance]
     public class CommandManagerInstance : InstanceExporter
     {
+        /// <summary>
+        /// Singleton instance of the CommandManager.
+        /// </summary>
         public override ISystem Instance => CommandManager.Instance;
 
+        /// <summary>
+        /// Instance type of CommandManager.
+        /// </summary>
         public override Type InstanceType => typeof(CommandManager);
     }
 }

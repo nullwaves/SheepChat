@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace SheepChat.Server.Sessions
 {
+    /// <summary>
+    /// SessionState manager. It does NOT implement system.
+    /// </summary>
     public class SessionStateManager : IRecomposable
     {
         private static readonly object Lock = new object();
@@ -16,6 +19,9 @@ namespace SheepChat.Server.Sessions
             Recompose();
         }
 
+        /// <summary>
+        /// Compose any loose imports and set the default state constructor.
+        /// </summary>
         public void Recompose()
         {
             Composer.Compose(this);
@@ -36,11 +42,22 @@ namespace SheepChat.Server.Sessions
             defaultStateConstructor = defaultStateType.GetConstructor(new Type[] { typeof(Session) });
         }
 
+        /// <summary>
+        /// Singleton instance of a SessionState manager
+        /// </summary>
         public static SessionStateManager Instance { get; } = new SessionStateManager();
 
+        /// <summary>
+        /// Loosely imported SessionStates and their priority metadata.
+        /// </summary>
         [ImportMany]
         public Lazy<SessionState, ExportSessionStateAttribute>[] States { get; set; }
 
+        /// <summary>
+        /// Generate an instance of the default state to set for the new session.
+        /// </summary>
+        /// <param name="session">Session parameter for SessionState construction</param>
+        /// <returns></returns>
         public SessionState CreateDefaultState(Session session)
         {
             lock (Lock)
@@ -51,13 +68,23 @@ namespace SheepChat.Server.Sessions
         }
     }
 
+    /// <summary>
+    /// Default SessionState where nothing happens.
+    /// </summary>
     internal class DefaultState : SessionState
     {
-
+        /// <summary>
+        /// Constructor for default state
+        /// </summary>
+        /// <param name="session">Session that is entering this state</param>
         public DefaultState(Session session) : base(session)
         { 
         }
         
+        /// <summary>
+        /// Default state's handler for everything
+        /// </summary>
+        /// <param name="command">It doesn't matter.</param>
         public override void ProcessInput(string command)
         { 
         }

@@ -5,13 +5,25 @@ using System.Text;
 
 namespace SheepChat.Server.Commands
 {
+    /// <summary>
+    /// The second most useful command in history aside from $kill
+    /// </summary>
     [ExportCommand("help")]
     public class HelpCommand : ICommand
     {
+        /// <summary>
+        /// Command name
+        /// </summary>
         public string Name => "Help";
 
+        /// <summary>
+        /// Short description of the help command.
+        /// </summary>
         public string ShortDescription => "Displays information about available commands";
 
+        /// <summary>
+        /// Full help description of this command.
+        /// </summary>
         public string HelpPage =>
             "Usage: $help [command]\r" +
             "\r" +
@@ -19,17 +31,26 @@ namespace SheepChat.Server.Commands
             "\r" +
             "Example: \"$help help\" displays this page as opposed to the commandlist\r";
 
+        /// <summary>
+        /// The level at which this command affects the systems.
+        /// </summary>
         public CommandUseLevel UseLevel => CommandUseLevel.User;
 
+        /// <summary>
+        /// Minimum required <see cref="UserRole"/> to use this command.
+        /// </summary>
         public UserRole MinimumUserRole => UserRole.Banned;
 
+        /// <summary>
+        /// Cached default help prompt
+        /// </summary>
         public string DefaultHelpPrompt;
 
-        public HelpCommand()
-        {
-            DefaultHelpPrompt = "";
-        }
-
+        /// <summary>
+        /// Execute this command
+        /// </summary>
+        /// <param name="sender">Session attempting to execute this command</param>
+        /// <param name="args">Command paramaters</param>
         public void Execute(Session sender, string[] args)
         {
             if (args.Length > 0)
@@ -40,13 +61,25 @@ namespace SheepChat.Server.Commands
             }
             else
             {
+                DefaultHelpPrompt = DefaultHelpPrompt != string.Empty ? DefaultHelpPrompt : BuildDefaultHelpPrompt();
                 sender.Write(DefaultHelpPrompt);
             }
         }
 
+        /// <summary>
+        /// Run any prep at system boot
+        /// </summary>
         public void Register()
         {
-            // Build the default help prompt
+            DefaultHelpPrompt = string.Empty;
+        }
+
+        /// <summary>
+        /// Generates a default help prompt that lists all commands available on the server.
+        /// </summary>
+        /// <returns>The generated help prompt</returns>
+        private string BuildDefaultHelpPrompt()
+        {
             StringBuilder builder = new StringBuilder();
 
             builder.AppendLine("The following commands are currently available:");
@@ -60,7 +93,7 @@ namespace SheepChat.Server.Commands
             builder.AppendLine("For more help, try $help followed by the command you'd like to know more about");
             builder.AppendLine();
 
-            DefaultHelpPrompt = builder.ToString();
+            return builder.ToString();
         }
     }
 }

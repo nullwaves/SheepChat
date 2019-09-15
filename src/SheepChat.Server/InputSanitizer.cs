@@ -4,14 +4,34 @@ using System.Text;
 
 namespace SheepChat.Server
 {
+    /// <summary>
+    /// Santizer service for cleaning input received from connections.
+    /// </summary>
     public class InputSanitizer
     {
+        /// <summary>
+        /// Single character NewLine reference.
+        /// </summary>
         public const string NewLine = "\r";
 
+        /// <summary>
+        /// Event handler delegate for sending connection and input information to the event handlers
+        /// </summary>
+        /// <param name="sender">Sender that triggered this event</param>
+        /// <param name="connectionArgs">Connection that triggered this event</param>
+        /// <param name="input">Input from the connection</param>
         public delegate void InputReceievedEventHandler(object sender, ConnectionArgs connectionArgs, string input);
 
+        /// <summary>
+        /// Event handler for data received from a connection
+        /// </summary>
         public event InputReceievedEventHandler InputReceived;
 
+        /// <summary>
+        /// Process incoming data from a connection.
+        /// </summary>
+        /// <param name="sender">Connection sending the data</param>
+        /// <param name="data">Data sent by the connection</param>
         public void OnDataReceived(IConnection sender, byte[] data)
         {
             string input = Encoding.ASCII.GetString(data);
@@ -49,6 +69,11 @@ namespace SheepChat.Server
             }
         }
 
+        /// <summary>
+        /// Keep track of the terminator last used by the connection when it sends data
+        /// </summary>
+        /// <param name="sender">Connection sending data</param>
+        /// <param name="input">String input sent by the connection</param>
         private void SetLastTerminator(IConnection sender, string input)
         {
             if (input.Contains("\r") && input.Contains("\n")) sender.LastInputTerminator = "\r\n";
@@ -56,6 +81,12 @@ namespace SheepChat.Server
             else if (input.Contains("\n")) sender.LastInputTerminator = "\n";
         }
 
+        /// <summary>
+        /// Handle excess terminators sent by systems like Windows which uses \r\n as opposed to a more concise \r or \n
+        /// </summary>
+        /// <param name="sender">Connection sending input</param>
+        /// <param name="input">Input sent by the connection</param>
+        /// <returns>String input stripped of any excess line terminators</returns>
         private static string StripExcessTerminator(IConnection sender, string input)
         {
             input = (sender.LastInputTerminator == "\r" && input.StartsWith("\n")) ? input.Replace("\n", string.Empty) : input;

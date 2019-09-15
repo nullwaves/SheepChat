@@ -1,6 +1,9 @@
 ﻿namespace SheepChat.Server
 {
-    public class ANSI
+    /// <summary>
+    /// Static ANSI reference class for escape codes.
+    /// </summary>
+    public static class ANSI
     {
         /// <summary>
         /// Basic ANSI Escape code. Starts every sequence.
@@ -159,9 +162,24 @@
         /// </summary>
         public enum MoveDirection
         {
+            /// <summary>
+            /// Up bit
+            /// </summary>
             Up = 'A',
+            
+            /// <summary>
+            /// Down bit
+            /// </summary>
             Down = 'B',
+
+            /// <summary>
+            /// Right bit
+            /// </summary>
             Right = 'C',
+
+            /// <summary>
+            /// Left bit
+            /// </summary>
             Left = 'D'
         }
 

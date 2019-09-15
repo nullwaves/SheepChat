@@ -5,10 +5,19 @@ using System.Reflection;
 
 namespace SheepChat.Server
 {
+    /// <summary>
+    /// Default static composer class for use in any system.
+    /// </summary>
     public static class Composer
     {
+        /// <summary>
+        /// Container for composing objects in.
+        /// </summary>
         public static CompositionContainer Container { get; set; }
 
+        /// <summary>
+        /// Default constructor for Composer. Sets the catalogs from which we'll be loading loose imports.
+        /// </summary>
         static Composer()
         {
             var asm = Assembly.GetExecutingAssembly();
@@ -23,6 +32,10 @@ namespace SheepChat.Server
                     ));
         }
 
+        /// <summary>
+        /// Compose loose imports on an object.
+        /// </summary>
+        /// <param name="obj">Object with loose imports</param>
         public static void Compose(object obj)
         {
             Container.ComposeParts(obj);

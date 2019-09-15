@@ -4,9 +4,19 @@ using static SheepChat.Server.ANSI;
 
 namespace SheepChat.Server
 {
+    /// <summary>
+    /// Data formatter that parses and replaces a custom format shortcode for special ANSI escape sequences like fancy text or cursor moving.
+    /// </summary>
     public static class ANSIShortcodeFormatter
     {
+        /// <summary>
+        /// Full dictionary list of shortcodes and their associated ANSI escape sequence.
+        /// </summary>
         public static Dictionary<string, string> Shortcodes;
+
+        /// <summary>
+        /// Static default constructor for the formatter. Loads all acceptable shortcodes
+        /// </summary>
         static ANSIShortcodeFormatter()
         {
             Shortcodes = new Dictionary<string, string>();
@@ -52,6 +62,11 @@ namespace SheepChat.Server
             }
         }
 
+        /// <summary>
+        /// Format a string that might contain shortcodes, replacing them with their associated escape sequence.
+        /// </summary>
+        /// <param name="data">String to parse</param>
+        /// <returns>Formatted string with ANSI escape sequences</returns>
         public static string Format(string data)
         {
             foreach(KeyValuePair<string,string> kvp in Shortcodes)

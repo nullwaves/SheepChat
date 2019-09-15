@@ -14,7 +14,6 @@
         /// <summary>
         /// Unsubscribe from currently subscribed system.
         /// </summary>
-        /// <param name="sender">The system to </param>
         void UnsubscribeToSystem();
 
         /// <summary>

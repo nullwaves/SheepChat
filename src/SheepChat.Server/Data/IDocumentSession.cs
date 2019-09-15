@@ -11,7 +11,7 @@ namespace SheepChat.Server.Data
         /// <summary>
         /// Integer ID number of a document.
         /// </summary>
-        public int ID { get; protected set; }
+        public string ID { get; protected set; }
     }
 
     /// <summary>

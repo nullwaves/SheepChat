@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using SheepChat.Server.Interfaces;
-using SheepChat.Server.Sessions;
-
-namespace SheepChat.Server.Rooms
+﻿namespace SheepChat.Server.Rooms
 {
     /// <summary>
     /// Default lobby room.

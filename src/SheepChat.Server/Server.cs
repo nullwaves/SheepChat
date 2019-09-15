@@ -66,7 +66,7 @@ namespace SheepChat.Server
         /// <summary>
         /// Constructor for a server with a specified port. Defaults to 23 if port number is out of range.
         /// </summary>
-        /// <param name="port"></param>
+        /// <param name="port">Port number to open socket on</param>
         public Server(int port)
         {
             Port = (port > 65535 || port < 1) ? 23 : port;

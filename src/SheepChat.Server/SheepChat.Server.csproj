@@ -60,6 +60,7 @@
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\MeCommand.cs" />
     <Compile Include="Commands\WhoCommand.cs" />
+    <Compile Include="Data\Models\RoomRecord.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Data\DataManager.cs" />
@@ -77,7 +78,7 @@
     <Compile Include="InputSanitizer.cs" />
     <Compile Include="Interfaces\IConnection.cs" />
     <Compile Include="Interfaces\IRecomposable.cs" />
-    <Compile Include="Interfaces\IRoom.cs" />
+    <Compile Include="Rooms\IRoom.cs" />
     <Compile Include="Interfaces\ISubSystem.cs" />
     <Compile Include="Interfaces\ISubSystemHost.cs" />
     <Compile Include="Interfaces\ISystem.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Rooms\DefaultRoom.cs" />
     <Compile Include="Rooms\Room.cs" />
     <Compile Include="Rooms\RoomManager.cs" />
+    <Compile Include="Rooms\UserOwnedRoom.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerManager.cs" />
     <Compile Include="SessionManager.cs" />

@@ -1,7 +1,7 @@
 ﻿using SheepChat.Server.Sessions;
 using System.Collections.Generic;
 
-namespace SheepChat.Server.Interfaces
+namespace SheepChat.Server.Rooms
 {
     /// <summary>
     /// Interface for a room to allow the manager to load a variety of custom room types.

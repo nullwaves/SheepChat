@@ -1,5 +1,4 @@
-﻿using SheepChat.Server.Interfaces;
-using SheepChat.Server.Sessions;
+﻿using SheepChat.Server.Sessions;
 using System;
 using System.Collections.Generic;
 

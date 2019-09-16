@@ -40,9 +40,15 @@ namespace SheepChat.Server.SessionStates
                     if(_password == command)
                     {
                         var user = UserRepository.Create(_username, _password);
-                        Session.AuthenticateSession(user);
+                        if(user == null)
+                        {
+                            Session.Write("<#magenta>Username already taken<#white>" + Environment.NewLine);
+                            substate = 0;
+                            break;
+                        }
                         Session.Write("<#white><#bblack><#normal>");
                         Session.State = new ChattingState(Session);
+                        Session.AuthenticateSession(user);
                         return;
                     }
                     else

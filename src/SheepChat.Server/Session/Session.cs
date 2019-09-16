@@ -29,17 +29,17 @@ namespace SheepChat.Server.Sessions
         /// <summary>
         /// Session's current state
         /// </summary>
-        public SessionState State 
-        { 
+        public SessionState State
+        {
             get
             {
                 return _state;
             }
-            set 
+            set
             {
                 _state?.OnLeaveState();
                 _state = value;
-            } 
+            }
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace SheepChat.Server.Sessions
         /// <param name="conn">Incoming connection</param>
         public Session(IConnection conn)
         {
-            if(conn != null)
+            if (conn != null)
             {
                 Connection = conn;
                 User = null;

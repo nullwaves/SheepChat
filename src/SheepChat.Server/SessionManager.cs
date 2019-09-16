@@ -21,6 +21,16 @@ namespace SheepChat.Server
         public static SessionManager Instance { get; } = new SessionManager();
 
         /// <summary>
+        /// Globally hookable event for SessionAuthenticated
+        /// </summary>
+        public event Session.SessionEventHandler SessionAuthenticated;
+
+        /// <summary>
+        /// Globally hookable event for SessionDisconnected
+        /// </summary>
+        public event Session.SessionEventHandler SessionDisconnected;
+
+        /// <summary>
         /// Dictionary of connected sessions.
         /// </summary>
         public Dictionary<string, Session> Sessions { get; private set; }
@@ -48,7 +58,7 @@ namespace SheepChat.Server
         /// <param name="conn">Connection that disconnected</param>
         public void OnSessionDisconnect(IConnection conn)
         {
-            lock(Sessions)
+            lock (Sessions)
             {
                 RemoveSession(conn.ID);
             }
@@ -62,7 +72,7 @@ namespace SheepChat.Server
         public void OnInputReceived(IConnection conn, string input)
         {
             Session session = null;
-            lock(Sessions)
+            lock (Sessions)
             {
                 session = Sessions.ContainsKey(conn.ID) ? Sessions[conn.ID] : null;
             }
@@ -124,6 +134,7 @@ namespace SheepChat.Server
         private void OnSessionAuthenticated(Session session)
         {
             SystemHost.UpdateSystemHost(this, session.ID + " - Authenticated");
+            SessionAuthenticated?.Invoke(session);
         }
 
         /// <summary>
@@ -132,11 +143,12 @@ namespace SheepChat.Server
         /// <param name="sessionId">ID of the session to remove</param>
         private void RemoveSession(string sessionId)
         {
-            lock(Sessions)
+            lock (Sessions)
             {
-                if(Sessions.ContainsKey(sessionId))
+                if (Sessions.ContainsKey(sessionId))
                 {
                     var sess = Sessions[sessionId];
+                    SessionDisconnected?.Invoke(sess);
                     sess.State?.OnLeaveState();
                     sess.UnsubscribeToSystem();
                     Sessions.Remove(sessionId);

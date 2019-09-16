@@ -21,9 +21,9 @@ namespace SheepChat.Server.SessionStates
             User u = UserRepository.Authenticate(_user, command);
             if (u != null)
             {
-                Session.AuthenticateSession(u);
                 Session.Write("<#white>Successfully logged in as " + _user.Username + Environment.NewLine);
                 Session.State = new ChattingState(Session);
+                Session.AuthenticateSession(u);
             }
             else
             {

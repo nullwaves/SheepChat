@@ -3,6 +3,7 @@ using System;
 using SheepChat.Server.Interfaces;
 using System.Net;
 using System.Text;
+using System.Diagnostics;
 
 namespace SheepChat.Server
 {
@@ -122,6 +123,11 @@ namespace SheepChat.Server
             }
             catch (Exception e)
             {
+                if (Debugger.IsAttached)
+                {
+                    Debugger.Break();
+                }
+
                 Console.WriteLine(e.Message);
                 OnDisconnect();
             }

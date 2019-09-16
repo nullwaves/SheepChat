@@ -11,7 +11,7 @@ namespace SheepChat.Server.Data
         /// <summary>
         /// Integer ID number of a document.
         /// </summary>
-        public string ID { get; protected set; }
+        public int ID { get; protected set; }
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ namespace SheepChat.Server.Data
         /// </summary>
         /// <param name="id">ID of the document to get</param>
         /// <returns>Document or null</returns>
-        T GetById(string id);
+        T GetById(int id);
 
         /// <summary>
         /// Gets a queryable object for the repo.

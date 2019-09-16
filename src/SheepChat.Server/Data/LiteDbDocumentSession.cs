@@ -43,7 +43,7 @@ namespace SheepChat.Server.Data
         /// </summary>
         /// <param name="id">ID of the document to fetch</param>
         /// <returns>Document with the specified ID or null</returns>
-        public T GetById(string id)
+        public T GetById(int id)
         {
             return Collection.FindById(id);
         }

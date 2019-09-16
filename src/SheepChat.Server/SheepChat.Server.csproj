@@ -89,6 +89,7 @@
     <Compile Include="Rooms\DefaultRoom.cs" />
     <Compile Include="Rooms\Room.cs" />
     <Compile Include="Rooms\RoomManager.cs" />
+    <Compile Include="Rooms\RoomRepository.cs" />
     <Compile Include="Rooms\UserOwnedRoom.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerManager.cs" />

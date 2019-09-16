@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using SheepChat.Server.Data.Repositories;
 using SheepChat.Server.Sessions;
 
@@ -53,6 +54,17 @@ namespace SheepChat.Server.SessionStates
                     var user = UserRepository.FindByUsername(command);
                     if (user != null)
                     {
+                        var loggedInAlready = (from s in SessionManager.Instance.Sessions.Values.ToList()
+                                               where s.User != null &&
+                                               s.User.ID.Equals(user.ID)
+                                               select s)
+                                               .FirstOrDefault();
+                        if(loggedInAlready != null)
+                        {
+                            Session.Write("<#magenta>User is already logged in.<#white>" + Environment.NewLine);
+                            Session.Write(">");
+                            return;
+                        }
                         Session.State = new LoginState(Session, user);
                     }
                     else

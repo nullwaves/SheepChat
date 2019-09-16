@@ -8,7 +8,7 @@
         /// <summary>
         /// ID of the user that owns this room.
         /// </summary>
-        public string OwnerUserID { get; set; }
+        public int OwnerUserID { get; set; }
 
         /// <summary>
         /// Room Name

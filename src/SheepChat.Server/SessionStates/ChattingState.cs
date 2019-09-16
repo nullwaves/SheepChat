@@ -1,4 +1,5 @@
-﻿using SheepChat.Server.Sessions;
+﻿using SheepChat.Server.Rooms;
+using SheepChat.Server.Sessions;
 using System;
 using System.Collections.Generic;
 
@@ -31,12 +32,8 @@ namespace SheepChat.Server.SessionStates
         /// <param name="command">Message being sent</param>
         public override void ProcessInput(string command)
         {
-            if (command.Length < 1) return;
-            string msg = string.Format("{0}: {1}{2}", Session.User.Username, command, Environment.NewLine);
-            foreach (Session sess in Who.Values)
-            {
-                sess?.Write(msg, true);
-            }
+            if (command.Length < 1 || Environment.NewLine.Contains(command)) return;
+            RoomManager.Instance.ProcessMessage(Session, command);
         }
 
         /// <summary>

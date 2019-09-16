@@ -25,7 +25,7 @@ namespace SheepChat.Server.Data.Repositories
         /// </summary>
         /// <param name="id">ID of the document to load</param>
         /// <returns>Document with the supplied ID or null</returns>
-        public static T Load(string id)
+        public static T Load(int id)
         {
             using (var repo = DataManager.OpenDocumentSession<T>())
             {

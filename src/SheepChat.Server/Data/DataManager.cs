@@ -43,8 +43,6 @@ namespace SheepChat.Server.Data
         public override void Start()
         {
             SystemHost.UpdateSystemHost(this, "Starting...");
-            configuredDocumentStorageProvider = (from provider in DocumentStorageProviders
-                                                 select provider).FirstOrDefault();
             string bootmsg = string.Format("Using Document Storage Provider: {0}", configuredDocumentStorageProvider.Name);
             SystemHost.UpdateSystemHost(this, bootmsg);
             configuredDocumentStorageProvider.Prepare();
@@ -76,6 +74,9 @@ namespace SheepChat.Server.Data
         public void Recompose()
         {
             Composer.Compose(this);
+
+            configuredDocumentStorageProvider = (from provider in DocumentStorageProviders
+                                                 select provider).FirstOrDefault();
         }
     }
 

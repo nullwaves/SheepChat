@@ -35,7 +35,7 @@ namespace SheepChat.Server.Data.Repositories
         /// </summary>
         /// <param name="id">ID of the user to load</param>
         /// <returns>User with the specified ID or null</returns>
-        public static User Load(string id) => DocumentRepository<User>.Load(id);
+        public static User Load(int id) => DocumentRepository<User>.Load(id);
 
         /// <summary>
         /// Create a new user withe supplied name and password.

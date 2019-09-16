@@ -44,6 +44,7 @@ namespace SheepChat.Server.Rooms
                 lock (Sessions)
                 {
                     Sessions.Add(session.ID, session);
+                    session.Write("<#green>");
                     session.Write(Name + Environment.NewLine);
                     session.Write(Description + Environment.NewLine);
                 }
@@ -75,7 +76,7 @@ namespace SheepChat.Server.Rooms
             {
                 foreach(Session s in Sessions.Values)
                 {
-                    s.Write(message);
+                    s.Write($"[{Name}] {message}");
                 }
             }
         }

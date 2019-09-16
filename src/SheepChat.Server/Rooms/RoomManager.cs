@@ -1,4 +1,6 @@
-﻿using SheepChat.Server.Interfaces;
+﻿using SheepChat.Server.Data.Repositories;
+using SheepChat.Server.Data.Models;
+using SheepChat.Server.Interfaces;
 using System.Collections.Generic;
 
 namespace SheepChat.Server.Rooms
@@ -36,7 +38,18 @@ namespace SheepChat.Server.Rooms
         /// </summary>
         public override void Start()
         {
-            throw new System.NotImplementedException();
+            RoomList.Add("main", new DefaultRoom());
+            LoadUserOwnedRooms();
+        }
+
+        private void LoadUserOwnedRooms()
+        {
+            var records = DocumentRepository<RoomRecord>.LoadAll();
+            foreach (var record in records)
+            {
+                var room = new UserOwnedRoom(record);
+                RoomList.Add(record.Name.ToLower(), room);
+            }
         }
 
         /// <summary>
@@ -45,6 +58,11 @@ namespace SheepChat.Server.Rooms
         public override void Stop()
         {
             throw new System.NotImplementedException();
+        }
+
+        private RoomManager()
+        {
+            Recompose();
         }
     }
 }

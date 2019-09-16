@@ -8,7 +8,16 @@ namespace SheepChat.Server.Rooms
     /// </summary>
     public class UserOwnedRoom : Room
     {
-        private RoomRecord Data;
+        private readonly RoomRecord Data;
+
+        /// <summary>
+        /// Constructor for a User-owned Room, 
+        /// </summary>
+        /// <param name="record"></param>
+        public UserOwnedRoom(RoomRecord record)
+        {
+            Data = record;
+        }
 
         /// <summary>
         /// User that owns this room.

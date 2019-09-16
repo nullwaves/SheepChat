@@ -1,4 +1,6 @@
-﻿namespace SheepChat.Server.Data
+﻿using System.Linq;
+
+namespace SheepChat.Server.Data.Repositories
 {
     /// <summary>
     /// Basic document repository class for quick saving and loading documents
@@ -28,6 +30,18 @@
             using (var repo = DataManager.OpenDocumentSession<T>())
             {
                 return repo.GetById(id);
+            }
+        }
+
+        /// <summary>
+        /// Loads all documents of a specific type that inherits <see cref="DocumentBase"/>
+        /// </summary>
+        /// <returns></returns>
+        public static T[] LoadAll()
+        {
+            using (var repo = DataManager.OpenDocumentSession<T>())
+            {
+                return repo.Query().ToArray();
             }
         }
     }

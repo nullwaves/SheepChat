@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using SheepChat.Server.Sessions;
+using SheepChat.Server.Data.Models;
 
 namespace SheepChat.Server.Rooms
 {
@@ -47,12 +48,74 @@ namespace SheepChat.Server.Rooms
         {
             if(SessionLocations.ContainsKey(session.ID))
             {
-                var roomName = SessionLocations[session.ID];
-                var room = RoomList[roomName];
-                var send = $"{session.User.Username}: {message}{Environment.NewLine}";
-                room.Send(send);
-                SystemHost.UpdateSystemHost(this, send);
+                var room = GetRoomContainingSession(session);
+                var send = $"{session.User.Username}: {message}";
+                room.Send(send + Environment.NewLine);
+                SystemHost.UpdateSystemHost(this, $"[{room.Name}] {send}");
             }
+        }
+
+        /// <summary>
+        /// Get the room that the provided session is currently in.
+        /// </summary>
+        /// <param name="session">Session to locate</param>
+        /// <returns>IRoom location of the Session</returns>
+        public IRoom GetRoomContainingSession(Session session)
+        {
+            if(SessionLocations.ContainsKey(session.ID))
+            {
+                return RoomList[SessionLocations[session.ID]];
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Move a user from their current room to a room with the provided name.
+        /// </summary>
+        /// <param name="session">Session to be moved</param>
+        /// <param name="name">Name of the room to move to</param>
+        public static void MoveTo(Session session, string name)
+        {
+            name = name.ToLower();
+            if(!RoomList.ContainsKey(name))
+            {
+                throw new ArgumentException("Room with that name does not exist.");
+            }
+            var newRoom = RoomList[name];
+            var oldRoom = Instance.GetRoomContainingSession(session);
+            oldRoom?.Leave(session);
+            newRoom.Join(session);
+            if(SessionLocations.ContainsKey(session.ID))
+            {
+                SessionLocations[session.ID] = newRoom.Name.ToLower();
+            }
+            else
+            {
+                SessionLocations.Add(session.ID, newRoom.Name.ToLower());
+            }
+        }
+
+        /// <summary>
+        /// Create a new room if one with the provided name does not already exist.
+        /// </summary>
+        /// <param name="sender">Session of the user trying to create a room.</param>
+        /// <param name="name">Name of the room to create.</param>
+        /// <returns></returns>
+        public static UserOwnedRoom CreateRoom(Session sender, string name)
+        {
+            var record = new RoomRecord()
+            {
+                Name = name,
+                Description = "",
+                OwnerUserID = sender.User.ID
+            };
+            var room = RoomList.ContainsKey(name.ToLower()) ? null : new UserOwnedRoom(record);
+            if(room != null)
+            {
+                RoomRepository.Save(room);
+                RoomList.Add(room.Name.ToLower(), room);
+            }
+            return room;
         }
 
         /// <summary>
@@ -111,9 +174,8 @@ namespace SheepChat.Server.Rooms
         {
             if (SessionLocations.ContainsKey(session.ID))
             {
-                var roomName = SessionLocations[session.ID];
-                var room = RoomList[roomName];
-                room.Leave(session);
+                IRoom room = GetRoomContainingSession(session);
+                room?.Leave(session);
                 lock(SessionLocations)
                 {
                     SessionLocations.Remove(session.ID);
@@ -121,7 +183,7 @@ namespace SheepChat.Server.Rooms
             }
         }
 
-        private void OnSessionAuthenticated(Sessions.Session session)
+        private void OnSessionAuthenticated(Session session)
         {
             var room = RoomList["main"];
             room.Join(session);

@@ -47,6 +47,7 @@ namespace SheepChat.Server.Rooms
                     session.Write("<#green>");
                     session.Write(Name + Environment.NewLine);
                     session.Write(Description + Environment.NewLine);
+                    session.Write("<#white>");
                 }
             }
         }

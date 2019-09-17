@@ -59,6 +59,7 @@
     <Compile Include="CommandManager.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\MeCommand.cs" />
+    <Compile Include="Commands\RoomCommand.cs" />
     <Compile Include="Commands\WhoCommand.cs" />
     <Compile Include="Data\Models\RoomRecord.cs" />
     <Compile Include="Interfaces\ICommand.cs" />

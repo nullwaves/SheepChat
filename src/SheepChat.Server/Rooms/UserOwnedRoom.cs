@@ -44,6 +44,7 @@ namespace SheepChat.Server.Rooms
         public void SetName(string newName)
         {
             Data.Name = newName.Trim();
+            Save();
         }
 
         /// <summary>
@@ -53,6 +54,12 @@ namespace SheepChat.Server.Rooms
         public void SetDescription(string newDescription)
         {
             Data.Description = newDescription.Trim();
+            Save();
+        }
+
+        private void Save()
+        {
+            RoomRepository.Save(Data);
         }
     }
 }

@@ -121,6 +121,8 @@ namespace SheepChat.Server
                     BeginListen();
                 }
             }
+            catch (ObjectDisposedException)
+            { }
             catch (Exception e)
             {
                 if (Debugger.IsAttached)
@@ -128,7 +130,7 @@ namespace SheepChat.Server
                     Debugger.Break();
                 }
 
-                Console.WriteLine(e.Message);
+                Console.WriteLine(e.GetType().ToString() + "  " + e.Message);
                 OnDisconnect();
             }
         }

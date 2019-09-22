@@ -36,10 +36,11 @@ namespace SheepChat.Server.Commands
         /// Help page definition for this command including usage and examples
         /// </summary>
         public string HelpPage =>
-            $"Usage: $room [join] [new] name{Environment.NewLine}" +
+            $"Usage: $room [join] [new] [desc] name|description{Environment.NewLine}" +
             $"{Environment.NewLine}" +
             $"join    -Move to another room{Environment.NewLine}" +
             $"new     -Create a new room{Environment.NewLine}" +
+            $"desc    -Check or change the rooms description{Environment.NewLine}" +
             $"name    -Name of a room{Environment.NewLine}" +
             $"{Environment.NewLine}" +
             $"Example: \"$room join main\" will move you to the main lobby.{Environment.NewLine}" +

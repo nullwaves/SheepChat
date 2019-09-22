@@ -1,7 +1,9 @@
 ﻿using SheepChat.Server.Data.Models;
+using SheepChat.Server.Data.Repositories;
 using SheepChat.Server.Interfaces;
 using SheepChat.Server.Sessions;
 using SheepChat.Server.SessionStates;
+using System;
 using System.Linq;
 using System.Text;
 
@@ -48,11 +50,37 @@ namespace SheepChat.Server.Commands
         /// <param name="args">Command parameters</param>
         public void Execute(Session sender, string[] args)
         {
+            if(args.Length > 0)
+            {
+                User u = UserRepository.FindByUsername(args[0]);
+                int id;
+                if (int.TryParse(args[0], out id) && u == null)
+                {
+                    u = UserRepository.Load(id);
+                }
+                if(u == null)
+                {
+                    sender.Write($"<#magenta>Could not find that user<#white>{Environment.NewLine}");
+                    return;
+                }
+                else
+                {
+                    var profile =
+                        $" ({u.ID}) - {u.Username}{Environment.NewLine}" +
+                        $"{Environment.NewLine}" +
+                        $"Role:       {u.UserRole}{Environment.NewLine}" +
+                        $"Registered: {u.Registered.ToString()}{Environment.NewLine}" +
+                        $"Last Seen:  {u.LastLogin.ToString()}{Environment.NewLine}" +
+                        $"{Environment.NewLine}";
+                    sender.Write($"<#cyan>{profile}<#white>");
+                    return;
+                }
+            }
             var users = (from s in ChattingState.Who.Values
                          select s.User).ToArray();
             var activeCount = users.Length;
             var prompt = new StringBuilder();
-            prompt.AppendLine($"<#cyan>{activeCount} Currently Available Users:");
+            prompt.AppendLine($"<#cyan> {activeCount} Currently Available Users:");
             prompt.AppendLine();
             
             foreach(var user in users)

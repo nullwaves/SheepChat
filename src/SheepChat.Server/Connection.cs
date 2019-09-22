@@ -38,7 +38,7 @@ namespace SheepChat.Server
         public byte[] Data { get; private set; }
 
         /// <summary>
-        /// Output buffer of data being sent to the connection.
+        /// Gets the textual representation of the data still waiting to be returned as an input string.
         /// </summary>
         public StringBuilder Buffer { get; set; }
 

@@ -49,6 +49,7 @@ namespace SheepChat.Server.Rooms
                     session.Write(Description + Environment.NewLine);
                     session.Write("<#white>");
                 }
+                Send($"<#cyan>{session.User.Username} has joined.<#white>{Environment.NewLine}");
             }
         }
 
@@ -63,6 +64,7 @@ namespace SheepChat.Server.Rooms
                 if (Sessions.ContainsKey(session.ID))
                 {
                     Sessions.Remove(session.ID);
+                    Send($"<#cyan>{session.User.Username} has left.<#white>{Environment.NewLine}");
                 }
             }
         }

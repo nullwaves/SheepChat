@@ -116,7 +116,7 @@ namespace SheepChat.Server
                 string key = args[0].ToLower();
                 if(QuitKeywords.Contains(key))
                 {
-                    sender.Write("<#lime>Come back soon.", false);
+                    sender.Write("<#green>Come back soon.", false);
                     sender.Connection.Disconnect();
                     return;
                 }

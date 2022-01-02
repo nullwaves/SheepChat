@@ -11,6 +11,16 @@
         public const string Escape = "\x1B";
 
         /// <summary>
+        /// Delete previous character and move the cursor back.
+        /// </summary>
+        public const string Backspace = Escape + "\x08";
+
+        /// <summary>
+        /// Delete the character following the cursor.
+        /// </summary>
+        public const string Delete = Escape + "\x7F";
+
+        /// <summary>
         /// Save the current cursor position.
         /// </summary>
         public const string SaveCursorPosition = Escape + "[s";

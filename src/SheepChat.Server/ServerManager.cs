@@ -72,12 +72,16 @@ namespace SheepChat.Server
                     case byte n when (n > 31 && n < 127):
                         buffer.Add(b);
                         break;
+
                     case 8:
-                    case 127:
                         if (connection.Buffer.Length > 0)
                         {
                             connection.Buffer.Remove(connection.Buffer.Length - 1, 1);
+                            connection.Send(ANSI.Backspace);
                         }
+                        break;
+
+                    case 127:
                         break;
                 }
             }

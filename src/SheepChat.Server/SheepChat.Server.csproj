@@ -61,12 +61,14 @@
     <Compile Include="Commands\MeCommand.cs" />
     <Compile Include="Commands\RoomCommand.cs" />
     <Compile Include="Commands\WhoCommand.cs" />
+    <Compile Include="Data\Interfaces\IModel.cs" />
+    <Compile Include="Data\Interfaces\IRepository.cs" />
+    <Compile Include="Data\Interfaces\IStorageProvider.cs" />
     <Compile Include="Data\Models\RoomRecord.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\IDocumentSession.cs" />
-    <Compile Include="Data\IDocumentStorageProvider.cs" />
     <Compile Include="Data\LiteDbDocumentSession.cs" />
     <Compile Include="Data\LiteDbDocumentStorageProvider.cs" />
     <Compile Include="Data\Models\User.cs" />

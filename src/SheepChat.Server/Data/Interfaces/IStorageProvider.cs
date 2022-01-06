@@ -1,4 +1,7 @@
-﻿namespace SheepChat.Server.Data.Interfaces
+﻿using System;
+using System.ComponentModel.Composition;
+
+namespace SheepChat.Server.Data.Interfaces
 {
     /// <summary>
     /// Interface for a data storage provider.
@@ -21,5 +24,20 @@
         /// <typeparam name="T">Model </typeparam>
         /// <returns></returns>
         IRepository<T> OpenRepository<T>() where T : IModel;
+    }
+
+    /// <summary>
+    /// Export attribute for Document Storage Providers
+    /// </summary>
+    [MetadataAttribute]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class ExportStorageProviderAttribute : ExportAttribute
+    {
+        /// <summary>
+        /// Default constructor for type contract
+        /// </summary>
+        public ExportStorageProviderAttribute() : base(typeof(IStorageProvider))
+        {
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SheepChat.Server.Data.Interfaces;
+using System;
 
 namespace SheepChat.Server.Data.Models
 {
@@ -16,7 +17,7 @@ namespace SheepChat.Server.Data.Models
         /// Default member status.
         /// </summary>
         Member = 20,
-        
+
         /// <summary>
         /// Member with more access and control of the server. Should help to keep rules enforced and acknowledged.
         /// </summary>
@@ -36,8 +37,13 @@ namespace SheepChat.Server.Data.Models
     /// <summary>
     /// User document that details the required data for a User
     /// </summary>
-    public class User : DocumentBase
+    public class User : IModel
     {
+        /// <summary>
+        /// User unique ID
+        /// </summary>
+        public long Id { get; set; }
+
         /// <summary>
         /// User's username
         /// </summary>
@@ -61,6 +67,6 @@ namespace SheepChat.Server.Data.Models
         /// <summary>
         /// User's UserRole for permissions
         /// </summary>
-        public UserRole UserRole { get; set; }
+        public long UserRole { get; set; }
     }
 }

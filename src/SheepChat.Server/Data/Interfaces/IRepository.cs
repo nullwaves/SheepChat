@@ -14,7 +14,7 @@ namespace SheepChat.Server.Data.Interfaces
         /// </summary>
         /// <param name="entity">Model to be created in the repository.</param>
         /// <returns>Created object.</returns>
-        T Create(T entity);
+        int Create(T entity);
 
         /// <summary>
         /// Fetch a single object from the repository.
@@ -29,5 +29,19 @@ namespace SheepChat.Server.Data.Interfaces
         /// <param name="where">LINQ expression to filter results.</param>
         /// <returns>Objects matching the expression.</returns>
         IEnumerable<T> Filter(Func<T, bool> where);
+
+        /// <summary>
+        /// Update entity in repository.
+        /// </summary>
+        /// <param name="entity">Entity to be updated.</param>
+        /// <returns>Number of updated rows.</returns>
+        int Update(T entity);
+
+        /// <summary>
+        /// Delete entity from repository.
+        /// </summary>
+        /// <param name="entity">Entity to be deleted.</param>
+        /// <returns>Number of deleted rows.</returns>
+        int Delete(T entity);
     }
 }

@@ -1,4 +1,4 @@
-﻿using SheepChat.Server.Data.Repositories;
+﻿using SheepChat.Server.Data.Models;
 using SheepChat.Server.Sessions;
 using System;
 
@@ -32,20 +32,24 @@ namespace SheepChat.Server.SessionStates
                     _username = command;
                     substate++;
                     break;
+
                 case 1:
                     _password = command;
                     substate++;
                     break;
+
                 case 2:
-                    if(_password == command)
+                    if (_password == command)
                     {
-                        var user = UserRepository.Create(_username, _password);
-                        if(user == null)
+                        var user = new User() { Username = _username, Password = _password };
+                        var id = User.manager.Create(user);
+                        if (id < 0)
                         {
                             Session.Write("<#magenta>Username already taken<#white>" + Environment.NewLine);
                             substate = 0;
                             break;
                         }
+                        user = User.manager.Get(id);
                         Session.Write("<#white><#bblack><#normal>");
                         Session.State = new ChattingState(Session);
                         Session.AuthenticateSession(user);
@@ -57,6 +61,7 @@ namespace SheepChat.Server.SessionStates
                         substate--;
                     }
                     break;
+
                 default:
                     return;
             }

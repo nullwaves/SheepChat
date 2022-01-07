@@ -1,5 +1,4 @@
 ﻿using SheepChat.Server.Data.Models;
-using SheepChat.Server.Data.Repositories;
 using SheepChat.Server.Sessions;
 using System;
 using System.Threading;
@@ -18,7 +17,7 @@ namespace SheepChat.Server.SessionStates
 
         public override void ProcessInput(string command)
         {
-            User u = UserRepository.Authenticate(_user, command);
+            User u = User.manager.Authenticate(_user, command);
             if (u != null)
             {
                 Session.Write("<#white>Successfully logged in as " + _user.Username + Environment.NewLine);

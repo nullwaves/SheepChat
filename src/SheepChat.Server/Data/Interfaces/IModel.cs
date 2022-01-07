@@ -5,5 +5,9 @@
     /// </summary>
     public interface IModel
     {
+        /// <summary>
+        /// Model ID in database
+        /// </summary>
+        long ID { get; set; }
     }
 }

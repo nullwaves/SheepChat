@@ -46,7 +46,7 @@ namespace SheepChat.Server.Rooms
         /// <param name="message"></param>
         public void ProcessMessage(Session session, string message)
         {
-            if(SessionLocations.ContainsKey(session.ID))
+            if (SessionLocations.ContainsKey(session.ID))
             {
                 var room = GetRoomContainingSession(session);
                 var send = $"{session.User.Username}: {message}";
@@ -62,7 +62,7 @@ namespace SheepChat.Server.Rooms
         /// <returns>IRoom location of the Session</returns>
         public IRoom GetRoomContainingSession(Session session)
         {
-            if(SessionLocations.ContainsKey(session.ID))
+            if (SessionLocations.ContainsKey(session.ID))
             {
                 return RoomList[SessionLocations[session.ID]];
             }
@@ -77,7 +77,7 @@ namespace SheepChat.Server.Rooms
         public static void MoveTo(Session session, string name)
         {
             name = name.ToLower();
-            if(!RoomList.ContainsKey(name))
+            if (!RoomList.ContainsKey(name))
             {
                 throw new ArgumentException("Room with that name does not exist.");
             }
@@ -85,7 +85,7 @@ namespace SheepChat.Server.Rooms
             var oldRoom = Instance.GetRoomContainingSession(session);
             oldRoom?.Leave(session);
             newRoom.Join(session);
-            if(SessionLocations.ContainsKey(session.ID))
+            if (SessionLocations.ContainsKey(session.ID))
             {
                 SessionLocations[session.ID] = newRoom.Name.ToLower();
             }
@@ -103,16 +103,17 @@ namespace SheepChat.Server.Rooms
         /// <returns></returns>
         public static UserOwnedRoom CreateRoom(Session sender, string name)
         {
-            var record = new RoomRecord()
+            var record = new Room()
             {
                 Name = name,
                 Description = "",
                 OwnerUserID = sender.User.ID
             };
             var room = RoomList.ContainsKey(name.ToLower()) ? null : new UserOwnedRoom(record);
-            if(room != null)
+            if (room != null)
             {
-                RoomRepository.Save(room);
+                var id = Room.manager.Create(room.Data);
+                room.Data = Room.manager.Get(id);
                 RoomList.Add(room.Name.ToLower(), room);
             }
             return room;
@@ -133,9 +134,10 @@ namespace SheepChat.Server.Rooms
         private int LoadUserOwnedRooms()
         {
             var ret = 0;
-            var rooms = RoomRepository.GetAllUserOwnedRooms();
-            foreach (var room in rooms)
+            var rooms = Room.manager.GetAll();
+            foreach (var r in rooms)
             {
+                var room = new UserOwnedRoom(r);
                 RoomList.Add(room.Name.ToLower(), room);
                 ret++;
             }
@@ -150,9 +152,9 @@ namespace SheepChat.Server.Rooms
             SystemHost.UpdateSystemHost(this, "Stopping...");
             foreach (IRoom r in RoomList.Values)
             {
-                if(r.GetType().Equals(typeof(UserOwnedRoom)))
+                if (r.GetType().Equals(typeof(UserOwnedRoom)))
                 {
-                    RoomRepository.Save((UserOwnedRoom)r);
+                    Room.manager.Save(((UserOwnedRoom)r).Data);
                 }
             }
             RoomList.Clear();
@@ -176,7 +178,7 @@ namespace SheepChat.Server.Rooms
             {
                 IRoom room = GetRoomContainingSession(session);
                 room?.Leave(session);
-                lock(SessionLocations)
+                lock (SessionLocations)
                 {
                     SessionLocations.Remove(session.ID);
                 }

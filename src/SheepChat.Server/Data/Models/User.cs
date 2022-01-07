@@ -1,4 +1,5 @@
 ﻿using SheepChat.Server.Data.Interfaces;
+using SheepChat.Server.Data.Managers;
 using System;
 
 namespace SheepChat.Server.Data.Models
@@ -39,10 +40,12 @@ namespace SheepChat.Server.Data.Models
     /// </summary>
     public class User : IModel
     {
+        internal static UserManager manager = new UserManager();
+
         /// <summary>
         /// User unique ID
         /// </summary>
-        public long Id { get; set; }
+        public long ID { get; set; }
 
         /// <summary>
         /// User's username

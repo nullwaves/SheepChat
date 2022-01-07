@@ -1,5 +1,4 @@
 ﻿using SheepChat.Server.Data.Models;
-using SheepChat.Server.Data.Repositories;
 using SheepChat.Server.Interfaces;
 using SheepChat.Server.Sessions;
 using SheepChat.Server.SessionStates;
@@ -50,15 +49,14 @@ namespace SheepChat.Server.Commands
         /// <param name="args">Command parameters</param>
         public void Execute(Session sender, string[] args)
         {
-            if(args.Length > 0)
+            if (args.Length > 0)
             {
-                User u = UserRepository.FindByUsername(args[0]);
-                int id;
-                if (int.TryParse(args[0], out id) && u == null)
+                User u = User.manager.FindByUsername(args[0]);
+                if (int.TryParse(args[0], out int id) && u == null)
                 {
-                    u = UserRepository.Load(id);
+                    u = User.manager.Get(id);
                 }
-                if(u == null)
+                if (u == null)
                 {
                     sender.Write($"<#magenta>Could not find that user<#white>{Environment.NewLine}");
                     return;
@@ -69,8 +67,8 @@ namespace SheepChat.Server.Commands
                         $" ({u.ID}) - {u.Username}{Environment.NewLine}" +
                         $"{Environment.NewLine}" +
                         $"Role:       {u.UserRole}{Environment.NewLine}" +
-                        $"Registered: {u.Registered.ToString()}{Environment.NewLine}" +
-                        $"Last Seen:  {u.LastLogin.ToString()}{Environment.NewLine}" +
+                        $"Registered: {u.Registered}{Environment.NewLine}" +
+                        $"Last Seen:  {u.LastLogin}{Environment.NewLine}" +
                         $"{Environment.NewLine}";
                     sender.Write($"<#cyan>{profile}<#white>");
                     return;
@@ -82,8 +80,8 @@ namespace SheepChat.Server.Commands
             var prompt = new StringBuilder();
             prompt.AppendLine($"<#cyan> {activeCount} Currently Available Users:");
             prompt.AppendLine();
-            
-            foreach(var user in users)
+
+            foreach (var user in users)
             {
                 var line = string.Format(
                     "{0}- {1}",

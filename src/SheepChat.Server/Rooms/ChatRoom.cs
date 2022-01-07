@@ -7,7 +7,7 @@ namespace SheepChat.Server.Rooms
     /// <summary>
     /// Abstracte base class and functionality for a room.
     /// </summary>
-    public abstract class Room : IRoom
+    public abstract class ChatRoom : IRoom
     {
         /// <summary>
         /// Room name.

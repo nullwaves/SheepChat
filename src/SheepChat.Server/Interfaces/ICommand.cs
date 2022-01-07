@@ -61,7 +61,7 @@ namespace SheepChat.Server.Interfaces
         /// Run any preperations on system boot. This would be where you should load any external data required for execution.
         /// </summary>
         void Register();
-        
+
         /// <summary>
         /// Execute the command.
         /// </summary>

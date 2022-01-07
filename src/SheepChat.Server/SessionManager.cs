@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using SheepChat.Server.Interfaces;
+﻿using SheepChat.Server.Interfaces;
 using SheepChat.Server.Sessions;
+using System;
+using System.Collections.Generic;
 
 namespace SheepChat.Server
 {
@@ -13,7 +13,8 @@ namespace SheepChat.Server
         /// <summary>
         /// Manager system name.
         /// </summary>
-        public override string Name { get { return "Session"; } }
+        public override string Name
+        { get { return "Session"; } }
 
         /// <summary>
         /// Singleton instance of the manager system to prevent duplicate systems.

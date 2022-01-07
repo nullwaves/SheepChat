@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using SheepChat.Server.Data.Models;
+﻿using SheepChat.Server.Data.Models;
 using SheepChat.Server.Sessions;
+using System;
+using System.Linq;
 
 namespace SheepChat.Server.SessionStates
 {

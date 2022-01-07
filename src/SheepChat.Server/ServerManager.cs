@@ -12,7 +12,8 @@ namespace SheepChat.Server
         /// <summary>
         /// Manager system name
         /// </summary>
-        public override string Name { get { return "Server"; } }
+        public override string Name
+        { get { return "Server"; } }
 
         private readonly Server server = new Server();
 

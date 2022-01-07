@@ -75,9 +75,9 @@ namespace SheepChat.Server.Rooms
         /// <param name="message">Message to send</param>
         public void Send(string message)
         {
-            lock(Sessions)
+            lock (Sessions)
             {
-                foreach(Session s in Sessions.Values)
+                foreach (Session s in Sessions.Values)
                 {
                     s.Write($"[{Name}] {message}");
                 }

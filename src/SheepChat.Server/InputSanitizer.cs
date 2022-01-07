@@ -42,9 +42,9 @@ namespace SheepChat.Server
             SetLastTerminator(sender, input);
             input = input.Replace("\n", NewLine);
             input = input.Replace("\r\r", NewLine);
-            if(input.Contains(NewLine))
+            if (input.Contains(NewLine))
             {
-                if(input == NewLine)
+                if (input == NewLine)
                 {
                     InputReceived?.Invoke(this, new ConnectionArgs(sender), input);
                 }
@@ -54,10 +54,10 @@ namespace SheepChat.Server
                 string[] commands = input.Split(NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 string currLine = string.Empty;
 
-                for(int i = 0; i < commands.Length; i++)
+                for (int i = 0; i < commands.Length; i++)
                 {
                     currLine = commands[i];
-                    if(i < commands.Length-1 || (isFinished && i == commands.Length-1))
+                    if (i < commands.Length - 1 || (isFinished && i == commands.Length - 1))
                     {
                         sender.LastRawInput = currLine;
                         InputReceived?.Invoke(this, new ConnectionArgs(sender), currLine.Trim());

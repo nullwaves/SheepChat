@@ -1,8 +1,8 @@
-﻿using SheepChat.Server.Interfaces;
-using System.Collections.Generic;
-using System;
+﻿using SheepChat.Server.Data.Models;
+using SheepChat.Server.Interfaces;
 using SheepChat.Server.Sessions;
-using SheepChat.Server.Data.Models;
+using System;
+using System.Collections.Generic;
 
 namespace SheepChat.Server.Rooms
 {

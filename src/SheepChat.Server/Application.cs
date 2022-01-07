@@ -35,7 +35,7 @@ namespace SheepChat.Server
         /// </summary>
         public void Start()
         {
-            foreach(var instance in Systems)
+            foreach (var instance in Systems)
             {
                 instance.Instance.SubscribeToSystemHost(this);
                 instance.Instance.Start();
@@ -47,7 +47,7 @@ namespace SheepChat.Server
         /// </summary>
         public void Stop()
         {
-            foreach(var instance in Systems)
+            foreach (var instance in Systems)
             {
                 instance.Instance.Stop();
             }

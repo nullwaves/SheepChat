@@ -32,7 +32,8 @@ namespace SheepChat.Server.Sessions
         /// <summary>
         /// Handle anything that needs to be done when a Session leaves a state.
         /// </summary>
-        public virtual void OnLeaveState() {}
+        public virtual void OnLeaveState()
+        { }
     }
 
     /// <summary>
@@ -63,9 +64,9 @@ namespace SheepChat.Server.Sessions
         /// <param name="metadata">SessionState metadata</param>
         public ExportSessionStateAttribute(IDictionary<string, object> metadata)
         {
-            foreach(var key in metadata.Keys)
+            foreach (var key in metadata.Keys)
             {
-                if(key == "statepriority")
+                if (key == "statepriority")
                 {
                     StatePriority = (int)metadata[key];
                 }

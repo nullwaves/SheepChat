@@ -1,9 +1,9 @@
-﻿using System.Net.Sockets;
+﻿using SheepChat.Server.Interfaces;
 using System;
-using SheepChat.Server.Interfaces;
-using System.Net;
-using System.Text;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 
 namespace SheepChat.Server
 {
@@ -22,6 +22,7 @@ namespace SheepChat.Server
         private static readonly byte[] IACSLE = new byte[] { 0xFF, 0xFD, 0x2D };
 
         #region Connection Information
+
         /// <summary>
         /// Connection ID string
         /// </summary>
@@ -31,7 +32,7 @@ namespace SheepChat.Server
         /// IPAddress from which the connection is currently connected.
         /// </summary>
         public IPAddress CurrentIPAddress { get; private set; }
-        
+
         /// <summary>
         /// Input buffer of data being sent by the connection.
         /// </summary>
@@ -51,9 +52,11 @@ namespace SheepChat.Server
         /// The last raw input sent by the connection.
         /// </summary>
         public string LastRawInput { get; set; }
-        #endregion
+
+        #endregion Connection Information
 
         #region Events
+
         /// <summary>
         /// Event triggered when a connection is disconnected.
         /// </summary>
@@ -68,11 +71,14 @@ namespace SheepChat.Server
         /// Event triggered when data has been sent to the client.
         /// </summary>
         public event EventHandler<ConnectionArgs> DataSent;
-        #endregion
+
+        #endregion Events
 
         #region Privates
+
         private readonly Socket socket;
-        #endregion
+
+        #endregion Privates
 
         /// <summary>
         /// Default constructor for a new connection to the server.

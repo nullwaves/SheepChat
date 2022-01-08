@@ -60,6 +60,8 @@
     <Compile Include="Data\Interfaces\IStorageProvider.cs" />
     <Compile Include="Data\Managers\ModelManager.cs" />
     <Compile Include="Data\Models\Room.cs" />
+    <Compile Include="Data\MySql\MySqlRepository.cs" />
+    <Compile Include="Data\MySql\MySqlStorageProvider.cs" />
     <Compile Include="Data\SQLite\SQLiteRepository.cs" />
     <Compile Include="Data\SQLite\SQLiteStorageProvider.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
@@ -114,6 +116,9 @@
     </PackageReference>
     <PackageReference Include="RepoDb">
       <Version>1.12.10-beta4</Version>
+    </PackageReference>
+    <PackageReference Include="RepoDb.MySql">
+      <Version>1.1.5</Version>
     </PackageReference>
     <PackageReference Include="RepoDb.SQLite.System">
       <Version>1.0.0</Version>

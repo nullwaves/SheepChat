@@ -12,6 +12,10 @@ namespace SheepChat.Server.Data.SQLite
     {
         internal string _connectionString;
 
+        /// <summary>
+        /// SQLite wrapped Model repository.
+        /// </summary>
+        /// <param name="connectionString">Connection string to SQLite database file.</param>
         public SQLiteRepository(string connectionString)
         {
             _connectionString = connectionString;

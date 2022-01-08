@@ -11,7 +11,7 @@ namespace SheepChat.Server.Data.LiteDb
     /// A LiteDB wrapper for <see cref="IRepository{T}"/>. Provides functionality for the system to get and store documents in a LiteDB NoSQL database.
     /// </summary>
     /// <typeparam name="T">Document type that inherits <see cref="IModel"/></typeparam>
-    public class LiteDbRepository<T> : IRepository<T> where T : IModel
+    public class LiteDbRepository<T> : IRepository<T> where T : class, IModel
     {
         private readonly LiteDatabase Database;
         private readonly LiteCollection<T> Collection;

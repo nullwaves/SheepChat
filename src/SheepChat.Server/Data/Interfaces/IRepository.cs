@@ -8,7 +8,7 @@ namespace SheepChat.Server.Data.Interfaces
     /// Interface for laying out a basic object repository
     /// </summary>
     /// <typeparam name="T">Class type extending the <see cref="IModel"/> interface.</typeparam>
-    public interface IRepository<T> : IDisposable where T : IModel
+    public interface IRepository<T> : IDisposable where T : class, IModel
     {
         /// <summary>
         /// Create instance <paramref name="entity"/> in repository.

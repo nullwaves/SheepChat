@@ -23,7 +23,7 @@ namespace SheepChat.Server.Data.Interfaces
         /// </summary>
         /// <typeparam name="T">Model </typeparam>
         /// <returns></returns>
-        IRepository<T> OpenRepository<T>() where T : IModel;
+        IRepository<T> OpenRepository<T>() where T : class, IModel;
     }
 
     /// <summary>

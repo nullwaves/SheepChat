@@ -1,4 +1,5 @@
-﻿using SheepChat.Server.Interfaces;
+﻿using SheepChat.Server.Config;
+using SheepChat.Server.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -25,8 +26,9 @@ namespace SheepChat.Server
         /// <summary>
         /// Application constructor, composes itself
         /// </summary>
-        public Application()
+        public Application(string config = "config.json")
         {
+            ConfigManager.Load(config);
             Recompose();
         }
 

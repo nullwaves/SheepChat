@@ -7,7 +7,7 @@ namespace SheepChat.Server.Data.LiteDb
     {
         public string Name => "LiteDb";
 
-        public IRepository<T> OpenRepository<T>() where T : IModel
+        public IRepository<T> OpenRepository<T>() where T : class, IModel
         {
             return new LiteDbRepository<T>();
         }

@@ -9,7 +9,7 @@ namespace SheepChat.Server.Data.Managers
     /// Generic model manager
     /// </summary>
     /// <typeparam name="T">Model class that implements <see cref="IModel"/></typeparam>
-    public class ModelManager<T> : IModelManager<T> where T : IModel
+    public class ModelManager<T> : IModelManager<T> where T : class, IModel
     {
         internal static readonly IRepository<T> repository = DataManager.OpenRepository<T>();
 

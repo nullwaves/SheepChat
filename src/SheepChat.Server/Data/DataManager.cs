@@ -1,4 +1,5 @@
-﻿using SheepChat.Server.Data.Interfaces;
+﻿using SheepChat.Server.Config;
+using SheepChat.Server.Data.Interfaces;
 using SheepChat.Server.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -65,7 +66,7 @@ namespace SheepChat.Server.Data
         /// </summary>
         /// <typeparam name="T"> Type</typeparam>
         /// <returns>An <see cref="IRepository{T}"/> from the configured  Storage Provider</returns>
-        public static IRepository<T> OpenRepository<T>() where T : IModel
+        public static IRepository<T> OpenRepository<T>() where T : class, IModel
         {
             return configuredStorageProvider.OpenRepository<T>();
         }
@@ -78,6 +79,7 @@ namespace SheepChat.Server.Data
             Composer.Compose(this);
 
             configuredStorageProvider = (from provider in StorageProviders
+                                         where provider.Name == ConfigManager.Current.Database
                                          select provider).FirstOrDefault();
         }
     }

@@ -102,6 +102,9 @@
     <Compile Include="Session\SessionStateManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>

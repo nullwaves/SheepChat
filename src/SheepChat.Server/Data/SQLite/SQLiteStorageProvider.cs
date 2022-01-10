@@ -1,5 +1,4 @@
-﻿using RepoDb;
-using SheepChat.Server.Config;
+﻿using SheepChat.Server.Config;
 using SheepChat.Server.Data.Interfaces;
 
 namespace SheepChat.Server.Data.SQLite

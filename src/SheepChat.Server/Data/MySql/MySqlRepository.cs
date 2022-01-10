@@ -28,7 +28,7 @@ namespace SheepChat.Server.Data.MySql
             {
                 try
                 {
-                    return (long)connection.Insert(entity);
+                    return connection.Insert<T, long>(entity);
                 }
                 catch
                 {

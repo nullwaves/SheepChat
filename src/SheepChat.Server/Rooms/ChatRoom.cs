@@ -7,7 +7,7 @@ namespace SheepChat.Server.Rooms
     /// <summary>
     /// Abstracte base class and functionality for a room.
     /// </summary>
-    public abstract class Room : IRoom
+    public abstract class ChatRoom : IRoom
     {
         /// <summary>
         /// Room name.
@@ -75,9 +75,9 @@ namespace SheepChat.Server.Rooms
         /// <param name="message">Message to send</param>
         public void Send(string message)
         {
-            lock(Sessions)
+            lock (Sessions)
             {
-                foreach(Session s in Sessions.Values)
+                foreach (Session s in Sessions.Values)
                 {
                     s.Write($"[{Name}] {message}");
                 }

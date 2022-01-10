@@ -35,7 +35,7 @@ namespace SheepChat.Server.Commands
         /// <summary>
         /// The help page detailing usage for this command.
         /// </summary>
-        public string HelpPage => 
+        public string HelpPage =>
             "Usage: $me [action]\r" +
             "\r" +
             "You're gunna need a bigger shield.";
@@ -51,7 +51,7 @@ namespace SheepChat.Server.Commands
             var msg = string.Join(" ", args);
             var cyan = ANSI.Color(ANSI.FGColorBit.Cyan);
             var white = ANSI.Color(ANSI.FGColorBit.White);
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 user.Write($"{cyan}{sender.User.Username} {msg}{white}{Environment.NewLine}", true);
             }

@@ -78,15 +78,15 @@ namespace SheepChat.Server.Sessions
         /// </summary>
         /// <param name="session">Session that is entering this state</param>
         public DefaultState(Session session) : base(session)
-        { 
+        {
         }
-        
+
         /// <summary>
         /// Default state's handler for everything
         /// </summary>
         /// <param name="command">It doesn't matter.</param>
         public override void ProcessInput(string command)
-        { 
+        {
         }
     }
 }

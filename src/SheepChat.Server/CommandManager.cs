@@ -79,9 +79,9 @@ namespace SheepChat.Server
                 foreach (var key in uniqKeys)
                 {
                     ICommand command = (from c in AvailableCommands
-                                       where c.Metadata.Keyword == key
-                                       orderby c.GetType().Assembly.GetName().Version
-                                       select c.Value).FirstOrDefault();
+                                        where c.Metadata.Keyword == key
+                                        orderby c.GetType().Assembly.GetName().Version
+                                        select c.Value).FirstOrDefault();
                     Dictionary.Add(key, command);
                     command.Register();
                     SystemHost.UpdateSystemHost(this, "Registered command: " + key);
@@ -114,7 +114,7 @@ namespace SheepChat.Server
             if (args.Count > 0)
             {
                 string key = args[0].ToLower();
-                if(QuitKeywords.Contains(key))
+                if (QuitKeywords.Contains(key))
                 {
                     sender.Write("<#green>Come back soon.", false);
                     sender.Connection.Disconnect();
@@ -127,7 +127,6 @@ namespace SheepChat.Server
                     sender.Write("<#magenta>Invalid Command<#white>" + Environment.NewLine);
                 }
             }
-
         }
     }
 

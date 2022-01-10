@@ -1,23 +1,22 @@
 ﻿using SheepChat.Server.Data.Models;
-using SheepChat.Server.Data.Repositories;
 
 namespace SheepChat.Server.Rooms
 {
     /// <summary>
     /// A user owned/managed room.
     /// </summary>
-    public class UserOwnedRoom : Room
+    public class UserOwnedRoom : ChatRoom
     {
         /// <summary>
         /// Storage friendly room document.
         /// </summary>
-        public RoomRecord Data { get; private set; }
+        public Room Data { get; set; }
 
         /// <summary>
-        /// Constructor for a User-owned Room, 
+        /// Constructor for a User-owned Room,
         /// </summary>
         /// <param name="record"></param>
-        public UserOwnedRoom(RoomRecord record)
+        public UserOwnedRoom(Room record)
         {
             Data = record;
         }
@@ -25,7 +24,7 @@ namespace SheepChat.Server.Rooms
         /// <summary>
         /// User that owns this room.
         /// </summary>
-        public User Owner => UserRepository.Load(Data.OwnerUserID);
+        public User Owner => User.manager.Get(Data.OwnerUserID);
 
         /// <summary>
         /// Room name.
@@ -59,7 +58,7 @@ namespace SheepChat.Server.Rooms
 
         private void Save()
         {
-            RoomRepository.Save(Data);
+            Room.manager.Save(Data);
         }
     }
 }

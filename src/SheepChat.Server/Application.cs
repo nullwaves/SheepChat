@@ -1,4 +1,5 @@
-﻿using SheepChat.Server.Interfaces;
+﻿using SheepChat.Server.Config;
+using SheepChat.Server.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -25,8 +26,9 @@ namespace SheepChat.Server
         /// <summary>
         /// Application constructor, composes itself
         /// </summary>
-        public Application()
+        public Application(string config = "config.json")
         {
+            ConfigManager.Load(config);
             Recompose();
         }
 
@@ -35,7 +37,7 @@ namespace SheepChat.Server
         /// </summary>
         public void Start()
         {
-            foreach(var instance in Systems)
+            foreach (var instance in Systems)
             {
                 instance.Instance.SubscribeToSystemHost(this);
                 instance.Instance.Start();
@@ -47,7 +49,7 @@ namespace SheepChat.Server
         /// </summary>
         public void Stop()
         {
-            foreach(var instance in Systems)
+            foreach (var instance in Systems)
             {
                 instance.Instance.Stop();
             }

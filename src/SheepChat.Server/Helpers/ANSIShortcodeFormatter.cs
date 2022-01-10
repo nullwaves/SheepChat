@@ -69,7 +69,7 @@ namespace SheepChat.Server
         /// <returns>Formatted string with ANSI escape sequences</returns>
         public static string Format(string data)
         {
-            foreach(KeyValuePair<string,string> kvp in Shortcodes)
+            foreach (KeyValuePair<string, string> kvp in Shortcodes)
             {
                 data = data.Replace("<#" + kvp.Key + ">", kvp.Value);
             }

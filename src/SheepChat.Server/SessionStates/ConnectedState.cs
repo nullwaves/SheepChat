@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using SheepChat.Server.Data.Repositories;
+﻿using SheepChat.Server.Data.Models;
 using SheepChat.Server.Sessions;
+using System;
+using System.Linq;
 
 namespace SheepChat.Server.SessionStates
 {
@@ -43,15 +43,18 @@ namespace SheepChat.Server.SessionStates
                     Session.State = new RegistrationState(Session);
                     Session.Write();
                     break;
+
                 case "":
                     break;
+
                 case "quit":
                 case "close":
                 case "exit":
                     Session.Connection.Disconnect();
                     break;
+
                 default:
-                    var user = UserRepository.FindByUsername(command);
+                    var user = User.manager.FindByUsername(command);
                     if (user != null)
                     {
                         var loggedInAlready = (from s in SessionManager.Instance.Sessions.Values.ToList()
@@ -59,7 +62,7 @@ namespace SheepChat.Server.SessionStates
                                                s.User.ID.Equals(user.ID)
                                                select s)
                                                .FirstOrDefault();
-                        if(loggedInAlready != null)
+                        if (loggedInAlready != null)
                         {
                             Session.Write("<#magenta>User is already logged in.<#white>" + Environment.NewLine);
                             Session.Write(">");

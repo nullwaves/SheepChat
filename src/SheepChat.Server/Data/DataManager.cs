@@ -1,4 +1,6 @@
-﻿using SheepChat.Server.Interfaces;
+﻿using SheepChat.Server.Config;
+using SheepChat.Server.Data.Interfaces;
+using SheepChat.Server.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -14,7 +16,8 @@ namespace SheepChat.Server.Data
         /// <summary>
         /// Manager System name
         /// </summary>
-        public override string Name { get { return "Database"; } }
+        public override string Name
+        { get { return "Database"; } }
 
         /// <summary>
         /// Singleton instance of this manager.
@@ -22,12 +25,12 @@ namespace SheepChat.Server.Data
         public static DataManager Instance { get; } = new DataManager();
 
         /// <summary>
-        /// Loosely imported document storage providers
+        /// Loosely imported  storage providers
         /// </summary>
         [ImportMany]
-        public IEnumerable<IDocumentStorageProvider> DocumentStorageProviders { get; set; }
+        public IEnumerable<IStorageProvider> StorageProviders { get; set; }
 
-        private static IDocumentStorageProvider configuredDocumentStorageProvider;
+        private static IStorageProvider configuredStorageProvider;
 
         /// <summary>
         /// Constructor for DataManager, triggers recomposition
@@ -43,9 +46,9 @@ namespace SheepChat.Server.Data
         public override void Start()
         {
             SystemHost.UpdateSystemHost(this, "Starting...");
-            string bootmsg = string.Format("Using Document Storage Provider: {0}", configuredDocumentStorageProvider.Name);
+            string bootmsg = string.Format("Using  Storage Provider: {0}", configuredStorageProvider.Name);
             SystemHost.UpdateSystemHost(this, bootmsg);
-            configuredDocumentStorageProvider.Prepare();
+            configuredStorageProvider.Prepare();
             SystemHost.UpdateSystemHost(this, "Started");
         }
 
@@ -59,13 +62,13 @@ namespace SheepChat.Server.Data
         }
 
         /// <summary>
-        /// Open a new document session for accessing the document storage
+        /// Open a new  session for accessing the  storage
         /// </summary>
-        /// <typeparam name="T">Document Type</typeparam>
-        /// <returns>An <see cref="IDocumentSession{T}"/> from the configured Document Storage Provider</returns>
-        public static IDocumentSession<T> OpenDocumentSession<T>() where T : DocumentBase
+        /// <typeparam name="T"> Type</typeparam>
+        /// <returns>An <see cref="IRepository{T}"/> from the configured  Storage Provider</returns>
+        public static IRepository<T> OpenRepository<T>() where T : class, IModel
         {
-            return configuredDocumentStorageProvider.OpenDocumentSession<T>();
+            return configuredStorageProvider.OpenRepository<T>();
         }
 
         /// <summary>
@@ -75,8 +78,9 @@ namespace SheepChat.Server.Data
         {
             Composer.Compose(this);
 
-            configuredDocumentStorageProvider = (from provider in DocumentStorageProviders
-                                                 select provider).FirstOrDefault();
+            configuredStorageProvider = (from provider in StorageProviders
+                                         where provider.Name == ConfigManager.Current.Database
+                                         select provider).FirstOrDefault();
         }
     }
 

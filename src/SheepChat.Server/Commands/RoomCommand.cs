@@ -59,13 +59,13 @@ namespace SheepChat.Server.Commands
                 sender.Write($"<#green>{room.Name}{Environment.NewLine}{room.Description}{Environment.NewLine}<#white>");
                 return;
             }
-            switch(args[0].ToLower())
+            switch (args[0].ToLower())
             {
                 case "join":
-                    if(args.Length > 1)
+                    if (args.Length > 1)
                     {
                         var name = args[1].ToLower();
-                        if(RoomManager.RoomList.ContainsKey(name))
+                        if (RoomManager.RoomList.ContainsKey(name))
                         {
                             RoomManager.MoveTo(sender, name);
                         }
@@ -79,12 +79,13 @@ namespace SheepChat.Server.Commands
                         sender.Write($"<#magenta>Must specify which room to join.<#white>{Environment.NewLine}");
                     }
                     return;
+
                 case "new":
-                    if(args.Length > 1)
+                    if (args.Length > 1)
                     {
                         var name = args[1];
                         var newRoom = RoomManager.CreateRoom(sender, name);
-                        if(newRoom != null)
+                        if (newRoom != null)
                         {
                             RoomManager.MoveTo(sender, newRoom.Name);
                         }
@@ -98,13 +99,14 @@ namespace SheepChat.Server.Commands
                         sender.Write($"<#magenta>Must declare a name for the new room.<#white>{Environment.NewLine}");
                     }
                     return;
+
                 case "desc":
-                    var newDesc = args.Length > 1 ? string.Join(" ", args, 1, args.Length-1) : string.Empty;
+                    var newDesc = args.Length > 1 ? string.Join(" ", args, 1, args.Length - 1) : string.Empty;
                     var thisRoom = RoomManager.Instance.GetRoomContainingSession(sender);
-                    if(thisRoom.GetType() == typeof(UserOwnedRoom))
+                    if (thisRoom.GetType() == typeof(UserOwnedRoom))
                     {
                         var userRoom = (UserOwnedRoom)thisRoom;
-                        if(sender.User.ID == userRoom.Owner.ID)
+                        if (sender.User.ID == userRoom.Owner.ID)
                         {
                             userRoom.SetDescription(newDesc);
                             userRoom.Send($"{sender.User.Username} has changed this room's description.{Environment.NewLine}<#green>{userRoom.Name}{Environment.NewLine}{userRoom.Description}<#white>{Environment.NewLine}");
@@ -113,6 +115,7 @@ namespace SheepChat.Server.Commands
                     }
                     sender.Write($"<#magenta>You cannot modify the description of this room.<#white>{Environment.NewLine}");
                     return;
+
                 default:
                     if (RoomManager.RoomList.ContainsKey(args[0].ToLower()))
                     {

@@ -3,7 +3,7 @@
     /// <summary>
     /// Default lobby room.
     /// </summary>
-    public class DefaultRoom : Room
+    public class DefaultRoom : ChatRoom
     {
         /// <summary>
         /// Room name

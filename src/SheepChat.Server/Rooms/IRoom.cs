@@ -12,7 +12,7 @@ namespace SheepChat.Server.Rooms
         /// Room Name
         /// </summary>
         string Name { get; }
-        
+
         /// <summary>
         /// Room Description
         /// </summary>
@@ -27,7 +27,7 @@ namespace SheepChat.Server.Rooms
         /// Number of sessions currently in the room.
         /// </summary>
         int UserCount { get; }
-        
+
         /// <summary>
         /// Join this session to the room.
         /// </summary>

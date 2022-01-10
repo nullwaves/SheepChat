@@ -29,12 +29,12 @@
         /// Load saved cursor position.
         /// </summary>
         public const string LoadCursorPosition = Escape + "[u";
-        
+
         /// <summary>
         /// Clear screen and return cursor to home position.
         /// </summary>
         public const string ClearScreenAndHomeCursor = Escape + "[2J";
-        
+
         /// <summary>
         /// Clear to end of line.
         /// </summary>
@@ -49,30 +49,37 @@
             /// ANSI Black Text
             /// </summary>
             Black = 30,
+
             /// <summary>
             /// ANSI Red Text
             /// </summary>
             Red = 31,
+
             /// <summary>
             /// ANSI Green Text
             /// </summary>
             Green = 32,
+
             /// <summary>
             /// ANSI Yellow Text
             /// </summary>
             Yellow = 33,
+
             /// <summary>
             /// ANSI Blue Text
             /// </summary>
             Blue = 34,
+
             /// <summary>
             /// ANSI Magenta Text
             /// </summary>
             Magenta = 35,
+
             /// <summary>
             /// ANSI Cyan Text
             /// </summary>
             Cyan = 36,
+
             /// <summary>
             /// ANSI White Text
             /// </summary>
@@ -88,30 +95,37 @@
             /// ANSI Black Background
             /// </summary>
             Black = 40,
+
             /// <summary>
             /// ANSI Red Background
             /// </summary>
             Red = 41,
+
             /// <summary>
             /// ANSI Green Background
             /// </summary>
             Green = 42,
+
             /// <summary>
             /// ANSI Yellow Background
             /// </summary>
             Yellow = 43,
+
             /// <summary>
             /// ANSI Blue Background
             /// </summary>
             Blue = 44,
+
             /// <summary>
             /// ANSI Magenta Background
             /// </summary>
             Magenta = 45,
+
             /// <summary>
             /// ANSI Cyan Background
             /// </summary>
             Cyan = 46,
+
             /// <summary>
             /// ANSI White Background
             /// </summary>
@@ -127,10 +141,12 @@
             /// ANSI Default Text Attribute
             /// </summary>
             Normal = 0,
+
             /// <summary>
             /// ANSI Bold Text Attribute
             /// </summary>
             Bold = 1,
+
             /// <summary>
             /// ANSI Underlined Text Attribute
             /// </summary>
@@ -176,7 +192,7 @@
             /// Up bit
             /// </summary>
             Up = 'A',
-            
+
             /// <summary>
             /// Down bit
             /// </summary>

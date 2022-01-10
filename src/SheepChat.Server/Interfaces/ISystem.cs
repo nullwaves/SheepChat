@@ -6,6 +6,11 @@
     public interface ISystem : ISystemBase, ISubSystemHost
     {
         /// <summary>
+        /// System name.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Subscribes this system to a host, as to receive updates.
         /// </summary>
         /// <param name="host"></param>

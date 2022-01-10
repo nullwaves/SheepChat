@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using SheepChat.Server.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System;
-using SheepChat.Server.Interfaces;
 
 namespace SheepChat.Server
 {
@@ -17,6 +17,7 @@ namespace SheepChat.Server
         public int Port { get; set; }
 
         #region Events
+
         /// <summary>
         /// A 'client connected' event raised by the server.
         /// </summary>
@@ -36,7 +37,8 @@ namespace SheepChat.Server
         /// A 'data sent' event raised by the server.
         /// </summary>
         public event EventHandler<ConnectionArgs> DataSent;
-        #endregion
+
+        #endregion Events
 
         /// <summary>
         /// Lock object for synchronization.
@@ -88,7 +90,6 @@ namespace SheepChat.Server
             socket.BeginAccept(new AsyncCallback(OnClientConnect), null);
         }
 
-
         private void OnClientConnect(IAsyncResult ar)
         {
             try
@@ -117,7 +118,7 @@ namespace SheepChat.Server
 
         private void HandleClientDisconnected(object sender, ConnectionArgs e)
         {
-            lock(Lock)
+            lock (Lock)
             {
                 connections.Remove(e.Connection);
             }
@@ -176,13 +177,11 @@ namespace SheepChat.Server
             socket?.Close();
 
             var connectionsCopy = new List<IConnection>(connections);
-            foreach(var connection in connectionsCopy)
+            foreach (var connection in connectionsCopy)
             {
                 connection.Send("Server shutting down. Disconnecting...");
                 connection.Disconnect();
             }
         }
     }
-
-
 }

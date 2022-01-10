@@ -33,6 +33,5 @@ namespace SheepChat.Server
         public ExportInstanceAttribute() : base(typeof(InstanceExporter))
         {
         }
-
     }
 }

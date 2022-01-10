@@ -26,7 +26,7 @@
         /// <param name="dbProvider">Name of the StorageProvider to use.</param>
         /// <param name="connectionString">Connection string to use.</param>
         /// <param name="port">Port to allow connections on.</param>
-        public ServerConfig(string dbProvider = "LiteDb", string connectionString = "Data Source=.\\db.sqlite3;Version=3;", int port = 23)
+        public ServerConfig(string dbProvider = "SQLite", string connectionString = "Data Source=.\\db.sqlite3;Version=3;", int port = 23)
         {
             Database = dbProvider;
             ConnectionString = connectionString;

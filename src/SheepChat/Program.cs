@@ -1,6 +1,7 @@
 ﻿using SheepChat.Server;
 using SheepChat.Server.Interfaces;
 using System;
+using System.Linq;
 
 namespace ServerHarness
 {
@@ -11,13 +12,15 @@ namespace ServerHarness
         private static void Main(string[] args)
 #pragma warning restore IDE0060 // Remove unused parameter
         {
+            var stopWords = CommandManager.QuitKeywords.ToList();
+
             Application app = new Application();
             app.Start();
 
             while (true)
             {
-                var s = Console.ReadLine();
-                if (s == "quit")
+                var s = Console.ReadLine().Trim();
+                if (stopWords.Contains(s))
                 {
                     app.Stop();
                     break;

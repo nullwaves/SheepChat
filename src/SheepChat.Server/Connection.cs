@@ -39,11 +39,6 @@ namespace SheepChat.Server
         public byte[] Data { get; private set; }
 
         /// <summary>
-        /// Gets the textual representation of the data still waiting to be returned as an input string.
-        /// </summary>
-        public StringBuilder Buffer { get; set; }
-
-        /// <summary>
         /// Denotes which line terminator this session used the last time it sent data.
         /// </summary>
         public string LastInputTerminator { get; set; }
@@ -93,7 +88,6 @@ namespace SheepChat.Server
             this.connectionHost = connectionHost;
 
             ID = Guid.NewGuid().ToString();
-            Buffer = new StringBuilder();
             CurrentIPAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
             Data = new byte[1];
 

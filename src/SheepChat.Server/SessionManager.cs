@@ -66,18 +66,18 @@ namespace SheepChat.Server
         }
 
         /// <summary>
-        /// Passes santized input to the session to handle.
+        /// Data received event handler. Passes data onto session.
         /// </summary>
-        /// <param name="conn">Connection that sent the input</param>
-        /// <param name="input">Input sent from the connection</param>
-        public void OnInputReceived(IConnection conn, string input)
+        /// <param name="conn">Connection that sent the input.</param>
+        /// <param name="data">Byte data sent.</param>
+        public void OnDataReceived(IConnection conn, byte[] data)
         {
             Session session = null;
             lock (Sessions)
             {
                 session = Sessions.ContainsKey(conn.ID) ? Sessions[conn.ID] : null;
             }
-            session?.ProcessInput(input);
+            session?.ProcessData(data);
         }
 
         /// <summary>

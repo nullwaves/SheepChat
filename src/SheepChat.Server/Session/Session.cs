@@ -86,17 +86,10 @@ namespace SheepChat.Server.Sessions
         /// <summary>
         /// Process incoming data from the connection
         /// </summary>
-        /// <param name="input">Input that is either a command or a message</param>
-        public void ProcessInput(string input)
+        /// <param name="data">Byte data sent by user.</param>
+        public void ProcessData(byte[] data)
         {
-            if (User != null && input.StartsWith(CommandManager.Instance.Trigger))
-            {
-                CommandManager.Instance.ProcessCommand(this, input.Substring(1));
-            }
-            else
-            {
-                State.ProcessInput(input);
-            }
+            State.ProcessData(data);
         }
 
         /// <summary>

@@ -24,11 +24,6 @@ namespace SheepChat.Server.Interfaces
         byte[] Data { get; }
 
         /// <summary>
-        /// Gets the textual representation of the data still waiting to be returned as an input string.
-        /// </summary>
-        StringBuilder Buffer { get; }
-
-        /// <summary>
         /// The last input termintaor used by the client.
         /// </summary>
         string LastInputTerminator { get; set; }

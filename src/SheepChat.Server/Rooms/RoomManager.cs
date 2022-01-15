@@ -48,10 +48,17 @@ namespace SheepChat.Server.Rooms
         {
             if (SessionLocations.ContainsKey(session.ID))
             {
-                var room = GetRoomContainingSession(session);
-                var send = $"{session.User.Username}: {message}";
-                room.Send(send + Environment.NewLine);
-                SystemHost.UpdateSystemHost(this, $"[{room.Name}] {send}");
+                if (session.User != null && message.StartsWith(CommandManager.Instance.Trigger))
+                {
+                    CommandManager.Instance.ProcessCommand(session, message.Substring(1));
+                }
+                else
+                {
+                    var room = GetRoomContainingSession(session);
+                    var send = $"{session.User.Username}: {message}";
+                    room.Send(send + Environment.NewLine);
+                    SystemHost.UpdateSystemHost(this, $"[{room.Name}] {send}");
+                }
             }
         }
 

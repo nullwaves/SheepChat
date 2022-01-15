@@ -17,8 +17,6 @@ namespace SheepChat.Server
 
         private readonly Server server = new Server();
 
-        private readonly InputSanitizer sanitizer = new InputSanitizer();
-
         /// <summary>
         /// DateTime at which the server started listening for connections.
         /// </summary>
@@ -38,8 +36,6 @@ namespace SheepChat.Server
             server.ClientDisconnected += Server_ClientDisconnected;
             server.DataReceived += Server_DataReceived;
             server.DataSent += Server_DataSent;
-
-            sanitizer.InputReceived += Sanitizer_InputReceived;
         }
 
         /// <summary>
@@ -63,31 +59,7 @@ namespace SheepChat.Server
             var connection = e.Connection;
             var data = connection.Data;
 
-            var buffer = new List<byte>();
-            foreach (byte b in data)
-            {
-                switch (b)
-                {
-                    case 10:
-                    case 13:
-                    case byte n when (n > 31 && n < 127):
-                        buffer.Add(b);
-                        break;
-
-                    case 8:
-                        if (connection.Buffer.Length > 0)
-                        {
-                            connection.Buffer.Remove(connection.Buffer.Length - 1, 1);
-                            connection.Send(ANSI.Backspace);
-                        }
-                        break;
-
-                    case 127:
-                        break;
-                }
-            }
-
-            sanitizer.OnDataReceived(connection, buffer.ToArray());
+            SessionManager.Instance.OnDataReceived(connection, data);
         }
 
         /// <summary>
@@ -110,17 +82,6 @@ namespace SheepChat.Server
         {
             UpdateSubSystemHost((ISubSystem)sender, e.Connection.ID + " - Connected");
             SessionManager.Instance.OnSessionConnect(e.Connection);
-        }
-
-        /// <summary>
-        /// Event handler for when the <see cref="InputSanitizer"/> has finished sanitizing incoming data.
-        /// </summary>
-        /// <param name="sender">Object that triggered the event</param>
-        /// <param name="args">Connection that sent the data</param>
-        /// <param name="input">Santized data from the connection</param>
-        private void Sanitizer_InputReceived(object sender, ConnectionArgs args, string input)
-        {
-            SessionManager.Instance.OnInputReceived(args.Connection, input);
         }
 
         /// <summary>

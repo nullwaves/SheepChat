@@ -1,4 +1,5 @@
-﻿using SheepChat.Server.Data.Models;
+﻿using SheepChat.Server.Config;
+using SheepChat.Server.Data.Models;
 using SheepChat.Server.Sessions;
 using System;
 using System.Linq;
@@ -13,12 +14,21 @@ namespace SheepChat.Server.SessionStates
     public class ConnectedState : SessionState
     {
         /// <summary>
+        /// Text to display to user on initial connection.
+        /// </summary>
+        private static readonly string[] SplashText = ConfigManager.LoadSplashScreen();
+
+        /// <summary>
         /// Constructor for sessionstate, welcome the connection and determine their user existence.
         /// </summary>
         /// <param name="session">Freshly connected session</param>
         public ConnectedState(Session session) : base(session)
         {
             if (session == null) return;
+            foreach (string line in SplashText)
+            {
+                Session.Write(line + Environment.NewLine);
+            }
             Session.Write("<#red>Welcome to SheepChat!" + Environment.NewLine);
             Session.Write("<#white>Returning users can login by typing their username; new users can register an account by typing: <#cyan><#bold>new<#white><#normal>" + Environment.NewLine);
             Session.Write(">");

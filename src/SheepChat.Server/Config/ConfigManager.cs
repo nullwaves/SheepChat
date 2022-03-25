@@ -60,5 +60,22 @@ namespace SheepChat.Server.Config
                 }
             }
         }
+
+        /// <summary>
+        /// Load the splash text from a text file.
+        /// </summary>
+        /// <param name="file">Path to text file containing the splash text.</param>
+        /// <returns>String array of lines in the text file.</returns>
+        public static string[] LoadSplashScreen(string file = "splash.txt")
+        {
+            try
+            {
+                return File.ReadAllLines(file);
+            }
+            catch
+            {
+                return new string[0];
+            }
+        }
     }
 }

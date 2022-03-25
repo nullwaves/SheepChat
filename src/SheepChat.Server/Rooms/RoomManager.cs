@@ -54,6 +54,8 @@ namespace SheepChat.Server.Rooms
                 }
                 else
                 {
+                    message = message.Replace("#", "");
+                    if (message.Length < 1) return;
                     var room = GetRoomContainingSession(session);
                     var send = $"{session.User.Username}: {message}";
                     room.Send(send + Environment.NewLine);

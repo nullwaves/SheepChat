@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 
 namespace SheepChat.Server.Sessions
@@ -43,30 +44,47 @@ namespace SheepChat.Server.Sessions
         public virtual void ProcessData(byte[] data)
         {
             // TODO: Catch and handle escape sequences
-            foreach (byte b in data)
+            if (data[0] == 0x1B)
             {
-                switch (b)
+                byte[] sequence = data.Skip(1).Take(Array.FindLastIndex(data, x => x != 0)).ToArray();
+                ProcessEscapeSequence(sequence);
+            }
+            else
+            {
+                foreach (byte b in data)
                 {
-                    case 13:
-                        ProcessInput(Buffer.ToString());
-                        Buffer.Clear();
-                        break;
+                    switch (b)
+                    {
+                        case 13:
+                            ProcessInput(Buffer.ToString());
+                            Buffer.Clear();
+                            break;
 
-                    case byte n when (n > 31 && n < 127):
-                        Buffer.Append(((char)b));
-                        break;
+                        case byte n when (n > 31 && n < 127):
+                            Buffer.Append(((char)b));
+                            break;
 
-                    case 8:
-                        if (Buffer.Length > 0)
-                        {
-                            Buffer.Remove(Buffer.Length - 1, 1);
-                        }
-                        break;
+                        case 8:
+                            if (Buffer.Length > 0)
+                            {
+                                Buffer.Remove(Buffer.Length - 1, 1);
+                            }
+                            break;
 
-                    case 127:
-                        break;
+                        case 127:
+                            break;
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// Handle escaped sequences like CSI.
+        /// </summary>
+        /// <param name="sequence">Bytes following the initial escape byte.</param>
+        public virtual void ProcessEscapeSequence(byte[] sequence)
+        {
+            // Let's do nothing by default.
         }
 
         /// <summary>

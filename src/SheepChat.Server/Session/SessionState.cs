@@ -42,6 +42,7 @@ namespace SheepChat.Server.Sessions
         /// <param name="data">Byte data sent from client.</param>
         public virtual void ProcessData(byte[] data)
         {
+            // TODO: Catch and handle escape sequences
             foreach (byte b in data)
             {
                 switch (b)

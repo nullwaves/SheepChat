@@ -89,7 +89,7 @@ namespace SheepChat.Server
 
             ID = Guid.NewGuid().ToString();
             CurrentIPAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
-            Data = new byte[1];
+            Data = new byte[32];
 
             //this.Send(IACSLE);
         }
@@ -99,6 +99,7 @@ namespace SheepChat.Server
         /// </summary>
         public void BeginListen()
         {
+            Data = new byte[32];
             socket.BeginReceive(this.Data, 0, this.Data.Length, SocketFlags.None, new AsyncCallback(OnDataReceived), null);
         }
 

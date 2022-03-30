@@ -16,11 +16,6 @@ namespace SheepChat.Server
         private readonly ISubSystem connectionHost;
 #pragma warning restore IDE0052
 
-        /// <summary>
-        /// IAC DO SUPPRESS_LOCAL_ECHO
-        /// </summary>
-        private static readonly byte[] IACSLE = new byte[] { 0xFF, 0xFD, 0x2D };
-
         #region Connection Information
 
         /// <summary>

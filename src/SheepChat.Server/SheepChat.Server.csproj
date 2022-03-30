@@ -64,6 +64,7 @@
     <Compile Include="Data\MySql\MySqlStorageProvider.cs" />
     <Compile Include="Data\SQLite\SQLiteRepository.cs" />
     <Compile Include="Data\SQLite\SQLiteStorageProvider.cs" />
+    <Compile Include="Helpers\Negotiation.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Data\DataManager.cs" />

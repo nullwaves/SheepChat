@@ -1,6 +1,6 @@
 # SheepChat
 
- VS2019, .NET Framework 4.7.2
+.NET Framework 4.7.2
 
 ## Installation
 
@@ -12,8 +12,8 @@
  2. Either run once to generate a config file or create `config.json` with the following settings:
 ```
 {
-  "Database": "LiteDb",
-  "ConnectionString": "",
+  "Database": "SQLite",
+  "ConnectionString": "Data Source=.\db.sqlite3;Version=3;",
   "Port": 23
 }
 ```
@@ -25,6 +25,8 @@
  Currently support is provided for flatfile storage through LiteDb or SQLite, and relational storage through MySql.
  
 ### LiteDb
+
+**LiteDb is no longer supported due to v5 removing critical functionality and a bug in v4.**
 
 To use LiteDb's BSON document storage, set Database to `LiteDb`. ConnectionString can be empty but is required to be present in the config.
 

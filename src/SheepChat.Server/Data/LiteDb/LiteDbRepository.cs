@@ -1,4 +1,4 @@
-﻿using LiteDB;
+﻿/*using LiteDB;
 using SheepChat.Server.Data.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -100,4 +100,4 @@ namespace SheepChat.Server.Data.LiteDb
             return Collection.Update(entity) ? 1 : 0;
         }
     }
-}
+}*/
